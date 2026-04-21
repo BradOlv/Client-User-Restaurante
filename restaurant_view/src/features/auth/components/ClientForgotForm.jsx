@@ -1,4 +1,5 @@
 import toast from "react-hot-toast";
+import { CheckCircleIcon } from "@heroicons/react/24/outline";
 
 export const ClientForgotForm = ({ onSwitch }) => {
     
@@ -6,7 +7,7 @@ export const ClientForgotForm = ({ onSwitch }) => {
         e.preventDefault();
         
         toast.success("Instrucciones enviadas a tu correo", {
-            icon: '🍗',
+            icon: <CheckCircleIcon className="w-5 h-5" />,
             style: {
                 borderRadius: '10px',
                 background: '#333',

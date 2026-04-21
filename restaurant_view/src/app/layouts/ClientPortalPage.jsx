@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { StarIcon } from "@heroicons/react/24/solid";
-import { TruckIcon, ClockIcon, SparklesIcon } from "@heroicons/react/24/outline";
+import { TruckIcon, ClockIcon, SparklesIcon, UserIcon } from "@heroicons/react/24/outline";
 
 // Importaciones de imágenes
 import POLLO_IMG from "../../assets/img/pollo.jpg";
@@ -51,9 +51,9 @@ export const ClientPortalPage = () => {
     ];
 
     const testimonials = [
-        { name: 'María García', text: 'Excelente servicio y la comida es deliciosa. Pedimos regularmente.', rating: 5, avatar: '👩' },
-        { name: 'Juan López', text: 'El mejor pollo frito de la ciudad. ¡100% recomendado!', rating: 5, avatar: '👨' },
-        { name: 'Sofia Martínez', text: 'Rápidos, amables y sabroso. Mi familia ama Kinal.', rating: 5, avatar: '👱‍♀️' },
+        { name: 'María García', text: 'Excelente servicio y la comida es deliciosa. Pedimos regularmente.', rating: 5, avatar: 'user' },
+        { name: 'Juan López', text: 'El mejor pollo frito de la ciudad. ¡100% recomendado!', rating: 5, avatar: 'user' },
+        { name: 'Sofia Martínez', text: 'Rápidos, amables y sabroso. Mi familia ama Kinal.', rating: 5, avatar: 'user' },
     ];
 
     useEffect(() => {
@@ -111,7 +111,9 @@ export const ClientPortalPage = () => {
             <div className="max-w-5xl mx-auto -mt-24 relative z-30 px-4">
                 <div className="bg-white rounded-[2.5rem] shadow-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between border border-gray-100 gap-6">
                     <div className="flex items-center gap-6">
-                        <div className="w-16 h-16 bg-[#fef2f2] rounded-full flex items-center justify-center border border-red-50 text-3xl shadow-inner">🍗</div>
+                        <div className="w-16 h-16 bg-[#fef2f2] rounded-full flex items-center justify-center border border-red-50 shadow-inner">
+                            <SparklesIcon className="w-8 h-8 text-gray-700" />
+                        </div>
                         <div>
                             <h3 className="font-black text-2xl text-gray-800 tracking-tight leading-none">¡Bienvenido, Bradley!</h3>
                             <p className="mt-1 text-sm text-gray-400 font-bold uppercase tracking-widest">Puntos Kinal: <span className="text-[#e11d48]">150</span></p>
@@ -194,12 +196,14 @@ export const ClientPortalPage = () => {
                     {testimonials.map((test, idx) => (
                         <div key={idx} className="bg-white rounded-2xl p-6 shadow-md">
                             <div className="flex items-center gap-4 mb-4">
-                                <span className="text-4xl">{test.avatar}</span>
+                                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                                    <UserIcon className="w-6 h-6 text-gray-600" />
+                                </div>
                                 <div>
                                     <h4 className="font-bold text-gray-800">{test.name}</h4>
                                     <div className="flex gap-1">
                                         {[...Array(test.rating)].map((_, i) => (
-                                            <StarIcon key={i} className="w-4 h-4 text-yellow-400" />
+                                            <StarIcon key={i} className="w-4 h-4 text-gray-700" />
                                         ))}
                                     </div>
                                 </div>

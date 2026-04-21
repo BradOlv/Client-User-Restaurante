@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 
 export const NotFoundPage = () => {
     const navigate = useNavigate();
@@ -15,8 +16,10 @@ export const NotFoundPage = () => {
                     </p>
                 </div>
 
-                {/* Emoji Decorativo */}
-                <div className="text-8xl mb-8 animate-bounce">🍗</div>
+                {/* Icono Decorativo */}
+                <div className="mb-8 flex justify-center animate-bounce">
+                    <ExclamationTriangleIcon className="w-24 h-24 text-gray-700" />
+                </div>
 
                 {/* Botones de Acción */}
                 <div className="flex gap-4 justify-center flex-wrap">

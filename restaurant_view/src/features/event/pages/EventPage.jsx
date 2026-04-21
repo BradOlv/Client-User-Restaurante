@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ClipboardDocumentListIcon, UserGroupIcon, CalendarIcon, MapPinIcon } from '@heroicons/react/24/outline';
+import { ClipboardDocumentListIcon, UserGroupIcon, CalendarIcon, MapPinIcon, CakeIcon, HeartIcon, BriefcaseIcon, AcademicCapIcon, SparklesIcon } from '@heroicons/react/24/outline';
 
 export const EventPage = () => {
     const [formData, setFormData] = useState({
@@ -16,11 +16,11 @@ export const EventPage = () => {
     const [isSubmitted, setIsSubmitted] = useState(false);
 
     const eventTypes = [
-        { id: 'cumpleaños', label: 'Cumpleaños', icon: '🎂' },
-        { id: 'boda', label: 'Boda', icon: '💍' },
-        { id: 'corporativo', label: 'Evento Corporativo', icon: '💼' },
-        { id: 'graduacion', label: 'Graduación', icon: '🎓' },
-        { id: 'otro', label: 'Otro Evento', icon: '🎉' }
+        { id: 'cumpleaños', label: 'Cumpleaños', icon: CakeIcon },
+        { id: 'boda', label: 'Boda', icon: HeartIcon },
+        { id: 'corporativo', label: 'Evento Corporativo', icon: BriefcaseIcon },
+        { id: 'graduacion', label: 'Graduación', icon: AcademicCapIcon },
+        { id: 'otro', label: 'Otro Evento', icon: SparklesIcon }
     ];
 
     const handleChange = (e) => {
@@ -64,7 +64,9 @@ export const EventPage = () => {
                             <div>
                                 <label className="block text-sm font-bold text-[#7f1d1d] mb-4">Tipo de Evento</label>
                                 <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                                    {eventTypes.map(type => (
+                                    {eventTypes.map(type => {
+                                        const IconComponent = type.icon;
+                                        return (
                                         <button
                                             key={type.id}
                                             type="button"
@@ -75,10 +77,13 @@ export const EventPage = () => {
                                                     : 'border-gray-200 bg-gray-50 hover:border-gray-300'
                                             }`}
                                         >
-                                            <div className="text-2xl mb-1">{type.icon}</div>
+                                            <div className="mb-1 flex justify-center">
+                                                <IconComponent className="w-6 h-6 text-gray-700" />
+                                            </div>
                                             <p className="text-xs font-bold text-gray-700">{type.label}</p>
                                         </button>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             </div>
 
