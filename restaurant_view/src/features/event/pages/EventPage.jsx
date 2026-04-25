@@ -1,239 +1,124 @@
-import { useState } from 'react';
-import { ClipboardDocumentListIcon, UserGroupIcon, CalendarIcon, MapPinIcon, CakeIcon, HeartIcon, BriefcaseIcon, AcademicCapIcon, SparklesIcon } from '@heroicons/react/24/outline';
+import { useState } from "react";
+import { Calendar, Users, Sparkles, PartyPopper, CheckCircle2 } from "lucide-react";
+import toast from "react-hot-toast";
+
+const EVENT_TYPES = [
+    { id: "birthday", label: "Cumpleaños", icon: PartyPopper, color: "bg-kfc-red" },
+    { id: "corporate", label: "Empresa", icon: Users, color: "bg-kfc-orange" },
+    { id: "wedding", label: "Boda", icon: Sparkles, color: "bg-kfc-yellow text-kfc-charcoal" },
+    { id: "other", label: "Otro", icon: Calendar, color: "bg-kfc-charcoal" },
+];
 
 export const EventPage = () => {
-    const [formData, setFormData] = useState({
-        eventType: 'cumpleaños',
-        date: '',
-        guestCount: 20,
-        name: '',
-        phone: '',
-        email: '',
-        description: '',
-        budget: ''
-    });
+    const [type, setType] = useState("birthday");
+    const [form, setForm] = useState({ name: "", phone: "", email: "", guests: "20", date: "", details: "" });
+    const [submitted, setSubmitted] = useState(false);
 
-    const [isSubmitted, setIsSubmitted] = useState(false);
-
-    const eventTypes = [
-        { id: 'cumpleaños', label: 'Cumpleaños', icon: CakeIcon },
-        { id: 'boda', label: 'Boda', icon: HeartIcon },
-        { id: 'corporativo', label: 'Evento Corporativo', icon: BriefcaseIcon },
-        { id: 'graduacion', label: 'Graduación', icon: AcademicCapIcon },
-        { id: 'otro', label: 'Otro Evento', icon: SparklesIcon }
-    ];
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
-    const handleSubmit = (e) => {
+    const submit = (e) => {
         e.preventDefault();
-        console.log('Evento registrado:', formData);
-        setIsSubmitted(true);
-        setTimeout(() => setIsSubmitted(false), 3000);
+        if (!form.name || !form.phone || !form.email || !form.date) {
+            toast.error("Completa todos los campos");
+            return;
+        }
+        setSubmitted(true);
+        toast.success("¡Solicitud enviada! Te contactaremos pronto.");
     };
 
-    return (
-        <div className="min-h-screen bg-[#fdfcf0] py-12">
-            <div className="max-w-5xl mx-auto px-6">
-                {/* Header */}
-                <div className="text-center mb-12">
-                    <h1 className="text-5xl font-black text-[#7f1d1d] mb-2 tracking-tight">
-                        Eventos Privados
-                    </h1>
-                    <p className="text-gray-600 text-lg">Haz tu evento memorable con Kinal Fried Chicken</p>
-                </div>
-
-                {isSubmitted && (
-                    <div className="mb-8 p-6 bg-green-100 border-l-4 border-green-500 text-green-800 rounded-lg">
-                        <p className="font-bold text-lg">¡Solicitud enviada!</p>
-                        <p>Nuestro equipo se contactará contigo en breve.</p>
+    if (submitted) {
+        return (
+            <div className="min-h-[80vh] bg-kfc-cream flex items-center justify-center px-4 py-16">
+                <div className="bg-white rounded-3xl p-10 md:p-14 max-w-xl text-center border-2 border-kfc-orange/20">
+                    <div className="w-20 h-20 bg-kfc-orange-light rounded-full flex items-center justify-center mx-auto mb-5">
+                        <CheckCircle2 className="w-10 h-10 text-kfc-orange" />
                     </div>
-                )}
-
-                <div className="grid lg:grid-cols-3 gap-8">
-                    {/* Formulario */}
-                    <div className="lg:col-span-2 bg-white rounded-3xl p-8 shadow-lg border border-gray-100">
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            {/* Tipo de Evento */}
-                            <div>
-                                <label className="block text-sm font-bold text-[#7f1d1d] mb-4">Tipo de Evento</label>
-                                <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                                    {eventTypes.map(type => {
-                                        const IconComponent = type.icon;
-                                        return (
-                                        <button
-                                            key={type.id}
-                                            type="button"
-                                            onClick={() => setFormData(prev => ({ ...prev, eventType: type.id }))}
-                                            className={`p-4 rounded-xl text-center transition-all border-2 ${
-                                                formData.eventType === type.id
-                                                    ? 'border-[#e11d48] bg-[#ffe6ed]'
-                                                    : 'border-gray-200 bg-gray-50 hover:border-gray-300'
-                                            }`}
-                                        >
-                                            <div className="mb-1 flex justify-center">
-                                                <IconComponent className="w-6 h-6 text-gray-700" />
-                                            </div>
-                                            <p className="text-xs font-bold text-gray-700">{type.label}</p>
-                                        </button>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-
-                            {/* Fecha */}
-                            <div>
-                                <label className="block text-sm font-bold text-[#7f1d1d] mb-2 flex items-center gap-2">
-                                    <CalendarIcon className="w-5 h-5" />
-                                    Fecha del Evento
-                                </label>
-                                <input
-                                    type="date"
-                                    name="date"
-                                    value={formData.date}
-                                    onChange={handleChange}
-                                    required
-                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#e11d48]"
-                                />
-                            </div>
-
-                            {/* Número de Invitados */}
-                            <div>
-                                <label className="block text-sm font-bold text-[#7f1d1d] mb-2 flex items-center gap-2">
-                                    <UserGroupIcon className="w-5 h-5" />
-                                    Número de Invitados
-                                </label>
-                                <input
-                                    type="number"
-                                    name="guestCount"
-                                    value={formData.guestCount}
-                                    onChange={handleChange}
-                                    min="10"
-                                    max="500"
-                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#e11d48]"
-                                />
-                            </div>
-
-                            {/* Presupuesto */}
-                            <div>
-                                <label className="block text-sm font-bold text-[#7f1d1d] mb-2">Presupuesto Estimado</label>
-                                <input
-                                    type="number"
-                                    name="budget"
-                                    value={formData.budget}
-                                    onChange={handleChange}
-                                    placeholder="Q 0.00"
-                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#e11d48]"
-                                />
-                            </div>
-
-                            {/* Nombre */}
-                            <div>
-                                <label className="block text-sm font-bold text-[#7f1d1d] mb-2">Nombre Completo</label>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    placeholder="Tu nombre"
-                                    required
-                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#e11d48]"
-                                />
-                            </div>
-
-                            {/* Teléfono */}
-                            <div>
-                                <label className="block text-sm font-bold text-[#7f1d1d] mb-2">Teléfono</label>
-                                <input
-                                    type="tel"
-                                    name="phone"
-                                    value={formData.phone}
-                                    onChange={handleChange}
-                                    placeholder="+502 XXXX XXXX"
-                                    required
-                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#e11d48]"
-                                />
-                            </div>
-
-                            {/* Email */}
-                            <div>
-                                <label className="block text-sm font-bold text-[#7f1d1d] mb-2">Correo Electrónico</label>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    placeholder="tu@email.com"
-                                    required
-                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#e11d48]"
-                                />
-                            </div>
-
-                            {/* Descripción */}
-                            <div>
-                                <label className="block text-sm font-bold text-[#7f1d1d] mb-2">Descripción del Evento</label>
-                                <textarea
-                                    name="description"
-                                    value={formData.description}
-                                    onChange={handleChange}
-                                    placeholder="Cuéntanos sobre tu evento..."
-                                    rows="5"
-                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#e11d48]"
-                                />
-                            </div>
-
-                            <button
-                                type="submit"
-                                className="w-full bg-[#e11d48] hover:bg-[#be123c] text-white font-bold py-4 rounded-2xl text-lg uppercase tracking-widest transition-all shadow-lg active:scale-95"
-                            >
-                                Solicitar Cotización
-                            </button>
-                        </form>
-                    </div>
-
-                    {/* Paquetes Destacados */}
-                    <div className="space-y-4">
-                        <h3 className="text-2xl font-black text-[#7f1d1d] mb-4">Paquetes Disponibles</h3>
-
-                        {[
-                            {
-                                name: 'Básico',
-                                price: 'Q 800',
-                                features: ['20-50 personas', 'Pollo frito', 'Bebidas', 'Decoración básica']
-                            },
-                            {
-                                name: 'Estándar',
-                                price: 'Q 1,500',
-                                features: ['50-100 personas', 'Combo completo', 'Bebidas ilimitadas', 'DJ incluido']
-                            },
-                            {
-                                name: 'Premium',
-                                price: 'Q 2,500+',
-                                features: ['100+ personas', 'Menú personalizado', 'Camarero', 'Decoración premium']
-                            }
-                        ].map((pkg, idx) => (
-                            <div key={idx} className={`rounded-2xl p-6 border-2 ${idx === 1 ? 'bg-[#ffe6ed] border-[#e11d48]' : 'bg-white border-gray-200'}`}>
-                                <h4 className="font-black text-[#7f1d1d] mb-2">{pkg.name}</h4>
-                                <p className="text-2xl font-black text-[#e11d48] mb-4">{pkg.price}</p>
-                                <ul className="space-y-2">
-                                    {pkg.features.map((feature, fidx) => (
-                                        <li key={fidx} className="text-sm text-gray-700 flex items-start gap-2">
-                                            <span className="text-[#e11d48] font-bold">✓</span>
-                                            {feature}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ))}
-                    </div>
+                    <h2 className="font-display text-4xl text-kfc-charcoal">¡Solicitud recibida!</h2>
+                    <p className="text-kfc-charcoal/70 mt-3">
+                        Hola <span className="font-bold">{form.name}</span>, te contactaremos al{" "}
+                        <span className="font-bold">{form.phone}</span> en menos de 24 horas para coordinar tu evento.
+                    </p>
+                    <button
+                        onClick={() => setSubmitted(false)}
+                        className="mt-8 rounded-full bg-kfc-orange hover:bg-kfc-orange-dark text-white font-bold uppercase tracking-wider px-6 py-3 transition-colors"
+                    >
+                        Nueva solicitud
+                    </button>
                 </div>
             </div>
+        );
+    }
+
+    return (
+        <div className="bg-kfc-cream min-h-screen">
+            <section className="relative py-16 bg-kfc-charcoal text-white grain-overlay overflow-hidden">
+                <div className="absolute -top-20 right-10 w-72 h-72 bg-kfc-yellow rounded-full blur-3xl opacity-30" />
+                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <span className="font-heading text-sm uppercase tracking-[0.3em] text-kfc-yellow">Eventos privados</span>
+                    <h1 className="font-display text-5xl md:text-7xl mt-3 leading-none">
+                        Tu <span className="text-kfc-orange">celebración</span>
+                    </h1>
+                    <p className="text-white/70 mt-4 max-w-2xl mx-auto">
+                        Cumpleaños, eventos empresariales, bodas... Hacemos de tu día algo crujiente y memorable.
+                    </p>
+                </div>
+            </section>
+
+            <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <form onSubmit={submit} className="bg-white rounded-3xl border-2 border-kfc-charcoal/5 p-6 md:p-10 space-y-6">
+                    <div>
+                        <h3 className="font-heading text-lg uppercase mb-4">Tipo de evento</h3>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            {EVENT_TYPES.map((t) => (
+                                <button
+                                    key={t.id}
+                                    type="button"
+                                    onClick={() => setType(t.id)}
+                                    className={`p-4 rounded-2xl border-2 text-left transition-all ${
+                                        type === t.id
+                                            ? "border-kfc-orange bg-kfc-orange-light"
+                                            : "border-kfc-charcoal/10 hover:border-kfc-orange/40"
+                                    }`}
+                                >
+                                    <div className={`w-10 h-10 rounded-xl ${t.color} flex items-center justify-center text-white mb-2`}>
+                                        <t.icon className="w-5 h-5" />
+                                    </div>
+                                    <p className="font-heading uppercase text-sm">{t.label}</p>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <label className="font-heading text-xs uppercase tracking-widest text-kfc-charcoal/60">Nombre</label>
+                            <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Tu nombre" className="mt-2 w-full px-4 py-3 rounded-xl border-2 border-kfc-charcoal/10 focus:border-kfc-orange outline-none" />
+                        </div>
+                        <div>
+                            <label className="font-heading text-xs uppercase tracking-widest text-kfc-charcoal/60">Teléfono</label>
+                            <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="+502 0000-0000" className="mt-2 w-full px-4 py-3 rounded-xl border-2 border-kfc-charcoal/10 focus:border-kfc-orange outline-none" />
+                        </div>
+                        <div>
+                            <label className="font-heading text-xs uppercase tracking-widest text-kfc-charcoal/60">Email</label>
+                            <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="tu@email.com" className="mt-2 w-full px-4 py-3 rounded-xl border-2 border-kfc-charcoal/10 focus:border-kfc-orange outline-none" />
+                        </div>
+                        <div>
+                            <label className="font-heading text-xs uppercase tracking-widest text-kfc-charcoal/60">Número de invitados</label>
+                            <input type="number" value={form.guests} onChange={(e) => setForm({ ...form, guests: e.target.value })} className="mt-2 w-full px-4 py-3 rounded-xl border-2 border-kfc-charcoal/10 focus:border-kfc-orange outline-none" />
+                        </div>
+                        <div className="sm:col-span-2">
+                            <label className="font-heading text-xs uppercase tracking-widest text-kfc-charcoal/60">Fecha del evento</label>
+                            <input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className="mt-2 w-full px-4 py-3 rounded-xl border-2 border-kfc-charcoal/10 focus:border-kfc-orange outline-none" />
+                        </div>
+                        <div className="sm:col-span-2">
+                            <label className="font-heading text-xs uppercase tracking-widest text-kfc-charcoal/60">Detalles adicionales</label>
+                            <textarea value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })} rows={4} placeholder="Cuéntanos más sobre tu evento..." className="mt-2 w-full px-4 py-3 rounded-xl border-2 border-kfc-charcoal/10 focus:border-kfc-orange outline-none resize-none" />
+                        </div>
+                    </div>
+
+                    <button type="submit" className="w-full rounded-full bg-kfc-red hover:bg-kfc-red-dark text-white font-bold uppercase tracking-wider py-4 text-base transition-colors">
+                        Solicitar cotización
+                    </button>
+                </form>
+            </section>
         </div>
     );
 };

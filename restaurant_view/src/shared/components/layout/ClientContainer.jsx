@@ -4,10 +4,10 @@ import { ClientFooter } from "./ClientFooter";
 
 export const ClientContainer = () => {
     return (
-        <div className="min-h-screen bg-[#FDFCF0] flex flex-col"> 
+        <div className="min-h-screen bg-kfc-cream flex flex-col font-sans">
             <ClientNavbar />
             <main className="flex-1">
-                <Outlet /> {/* Aquí se renderiza ClientPortalPage o MenuView */}
+                <Outlet />
             </main>
             <ClientFooter />
         </div>

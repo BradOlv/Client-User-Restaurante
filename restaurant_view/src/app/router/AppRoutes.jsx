@@ -1,14 +1,14 @@
 import { Route, Routes, Navigate } from "react-router-dom";
 import { ClientLoginPage } from "../../features/auth/pages/ClientLoginPage";
-import { ClientPortalPage } from "../layouts/ClientPortalPage"; 
-import { MenuView } from "../../features/menu/components/MenuView"; 
+import { ClientPortalPage } from "../layouts/ClientPortalPage";
+import { MenuView } from "../../features/menu/components/MenuView";
 import { ClientContainer } from "../../shared/components/layout/ClientContainer";
 import { CategoryView } from "../../features/menu/components/CategoryView";
 import { CouponView } from "../../features/menu/components/CouponView";
 import { ProfileView } from "../../features/menu/components/ProfileView";
 import { CartView } from "../../features/menu/components/CartView";
 import { ConfirmationView } from "../../features/menu/components/ConfirmationView";
-import { CheckoutView } from "../../features/menu/components/CheckoutView"; 
+import { CheckoutView } from "../../features/menu/components/CheckoutView";
 import { ReservationPage } from "../../features/reservation/pages/ReservationPage";
 import { EventPage } from "../../features/event/pages/EventPage";
 import { OrderHistoryPage } from "../../features/order/pages/OrderHistoryPage";
@@ -26,10 +26,8 @@ export const AppRoutes = () => {
 
             {/* Rutas con Navbar (Layout Principal) */}
             <Route path="/portal" element={<ClientContainer />}>
-                {/* Al entrar a /portal, se muestra ClientPortalPage por defecto */}
                 <Route index element={<ClientPortalPage />} />
-                
-                {/* Rutas hijas corregidas */}
+
                 <Route path="menu" element={<MenuView />} />
                 <Route path="menu/:categoryName" element={<CategoryView />} />
                 <Route path="cupones" element={<CouponView />} />
@@ -46,9 +44,9 @@ export const AppRoutes = () => {
                 <Route path="privacidad" element={<PrivacyPage />} />
             </Route>
 
-            {/* Redirección inicial: Si entras a / te manda a /login */}
+            {/* Redirección inicial */}
             <Route path="/" element={<Navigate to="/login" replace />} />
-            
+
             {/* 404 */}
             <Route path="*" element={<NotFoundPage />} />
         </Routes>

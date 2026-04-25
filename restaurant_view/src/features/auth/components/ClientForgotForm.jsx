@@ -1,53 +1,44 @@
 import toast from "react-hot-toast";
-import { CheckCircleIcon } from "@heroicons/react/24/outline";
+import { Mail, ArrowLeft } from "lucide-react";
 
 export const ClientForgotForm = ({ onSwitch }) => {
-    
     const handleForgotSubmit = (e) => {
         e.preventDefault();
-        
-        toast.success("Instrucciones enviadas a tu correo", {
-            icon: <CheckCircleIcon className="w-5 h-5" />,
-            style: {
-                borderRadius: '10px',
-                background: '#333',
-                color: '#fff',
-            },
-        });
-
-        onSwitch(); 
+        toast.success("Instrucciones enviadas a tu correo");
+        onSwitch();
     };
 
     return (
         <form onSubmit={handleForgotSubmit} className="space-y-5 animate-fadeIn">
             <div>
-                <label className="block text-xs font-bold text-[#a16207] uppercase mb-1.5 tracking-wide">
-                    Correo Electrónico
+                <label className="font-heading text-xs uppercase tracking-widest text-kfc-charcoal/60 block">
+                    Correo electrónico
                 </label>
-                <input 
-                    type="email" 
-                    required
-                    className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:border-[#fb923c] focus:ring-2 focus:ring-orange-100 transition-all shadow-sm"
-                    placeholder="tu-correo@kinal.edu.gt"
-                />
+                <div className="relative mt-2">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-kfc-charcoal/40" />
+                    <input
+                        type="email"
+                        required
+                        placeholder="tu@email.com"
+                        className="w-full pl-11 pr-4 py-3 rounded-xl border-2 border-kfc-charcoal/10 bg-white outline-none focus:border-kfc-orange transition-colors"
+                    />
+                </div>
             </div>
 
-            <button 
+            <button
                 type="submit"
-                className="w-full bg-[#e11d48] hover:bg-red-700 text-white font-black py-3 rounded-xl text-sm shadow-md transition-all active:scale-95"
+                className="w-full rounded-full bg-kfc-red hover:bg-kfc-red-dark text-white font-bold uppercase tracking-wider py-4 text-base shadow-lg transition-all hover:-translate-y-0.5 active:scale-95"
             >
-                ENVIAR INSTRUCCIONES
+                Enviar instrucciones
             </button>
 
-            <div className="text-center pt-2">
-                <button 
-                    type="button"
-                    onClick={onSwitch}
-                    className="text-xs font-bold text-[#a16207] hover:text-red-600 transition-colors"
-                >
-                    ¿Recordaste tu clave? Volver
-                </button>
-            </div>
+            <button
+                type="button"
+                onClick={onSwitch}
+                className="w-full text-sm font-bold text-kfc-charcoal/60 hover:text-kfc-orange transition-colors flex items-center justify-center gap-1"
+            >
+                <ArrowLeft className="w-4 h-4" /> Volver al login
+            </button>
         </form>
     );
 };

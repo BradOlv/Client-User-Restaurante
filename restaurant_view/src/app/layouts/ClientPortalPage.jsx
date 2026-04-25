@@ -1,230 +1,321 @@
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { StarIcon } from "@heroicons/react/24/solid";
-import { TruckIcon, ClockIcon, SparklesIcon, UserIcon } from "@heroicons/react/24/outline";
-
-// Importaciones de imágenes
-import POLLO_IMG from "../../assets/img/pollo.jpg";
-import ALITAS_IMG from "../../assets/img/alitas.png";
-import CAMARONES_IMG from "../../assets/img/camarones.png";
-import PIZZA_IMG from "../../assets/img/pizza.jpg";
-import ENSALADAS_IMG from "../../assets/img/ensaladas.png";
-import LOGO_KINAL from "../../assets/img/logofriedchicken.png";
+import {
+    ArrowRight,
+    Star,
+    Flame,
+    Award,
+    Clock,
+    Truck,
+    Drumstick,
+    Users,
+} from "lucide-react";
+import {
+    PRODUCTS,
+    COMBOS,
+    TESTIMONIALS,
+    STATS,
+    BRANCHES,
+} from "../../shared/data/mockData";
 
 export const ClientPortalPage = () => {
     const navigate = useNavigate();
-    const [currentSlide, setCurrentSlide] = useState(0);
-
-    const slides = [
-        {
-            id: 1,
-            title: "ENSALADA DE CAMARONES",
-            subtitle: "¡NUEVO TAZÓN DE TEMPORADA!",
-            bgColor: "bg-[#e11d48]", 
-            textColor: "text-white",
-            img: CAMARONES_IMG
-        },
-        {
-            id: 2,
-            title: "MEGA COMBO KINAL",
-            subtitle: "12 PIEZAS + PAPAS + GASEOSA",
-            bgColor: "bg-[#fb923c]", 
-            textColor: "text-white",
-            img: POLLO_IMG
-        },
-        {
-            id: 3,
-            title: "PIZZAS ARTESANALES",
-            subtitle: "EL MEJOR SABOR ITALIANO",
-            bgColor: "bg-[#facc15]", 
-            textColor: "text-red-900",
-            img: PIZZA_IMG
-        }
-    ];
-
-    const menuCategories = [
-        { id: 1, title: "CAMARONES KINAL", span: "md:col-span-2", bg: "bg-[#facc15]", text: "text-red-900", img: CAMARONES_IMG },
-        { id: 2, title: "KINALITOS Y ALITAS", span: "md:col-span-1", bg: "bg-[#fb923c]", text: "text-white", img: ALITAS_IMG },
-        { id: 3, title: "POLLO TRADICIONAL", span: "md:col-span-1", bg: "bg-[#e11d48]", text: "text-white", img: POLLO_IMG },
-        { id: 4, title: "PIZZAS", span: "md:col-span-1", bg: "bg-[#fb923c]", text: "text-white", img: PIZZA_IMG },
-        { id: 5, title: "ENSALADAS Y DESAYUNOS", span: "md:col-span-1", bg: "bg-[#facc15]", text: "text-red-900", img: ENSALADAS_IMG },
-    ];
-
-    const testimonials = [
-        { name: 'María García', text: 'Excelente servicio y la comida es deliciosa. Pedimos regularmente.', rating: 5, avatar: 'user' },
-        { name: 'Juan López', text: 'El mejor pollo frito de la ciudad. ¡100% recomendado!', rating: 5, avatar: 'user' },
-        { name: 'Sofia Martínez', text: 'Rápidos, amables y sabroso. Mi familia ama Kinal.', rating: 5, avatar: 'user' },
-    ];
-
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-        }, 4000);
-        return () => clearInterval(timer);
-    }, [slides.length]);
+    const featured = PRODUCTS.filter((p) => p.bestseller).slice(0, 4);
 
     return (
-        <div className="max-w-7xl mx-auto px-4 py-6 space-y-16 pb-12">
-            
-            {/* SECCIÓN 1: HERO CARRUSEL */}
-            <div className="relative w-full h-[400px] md:h-[500px] rounded-[3.5rem] overflow-hidden shadow-2xl group">
-                {slides.map((slide, index) => (
-                    <div 
-                        key={slide.id}
-                        className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out flex flex-col md:flex-row justify-between items-center p-12 md:px-24
-                            ${index === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"}
-                            ${slide.bgColor}
-                        `}
-                    >
-                        <div className="text-center md:text-left z-10 max-w-xl">
-                            <h2 className={`text-5xl md:text-7xl font-black italic tracking-tighter drop-shadow-xl ${slide.textColor} leading-none`}>
-                                {slide.title}
-                            </h2>
-                            <p className={`mt-6 text-xl md:text-3xl font-bold tracking-widest ${slide.textColor} opacity-90`}>
-                                {slide.subtitle}
+        <div className="overflow-hidden">
+            {/* HERO */}
+            <section className="relative min-h-[90vh] grain-overlay bg-kfc-cream">
+                <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-kfc-yellow rounded-full blur-3xl opacity-40" />
+                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-kfc-orange rounded-full blur-3xl opacity-30" />
+
+                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16 lg:pt-20 lg:pb-24">
+                    <div className="grid lg:grid-cols-12 gap-8 items-center">
+                        <div className="lg:col-span-7 space-y-6">
+                            <div className="inline-flex items-center gap-2 bg-kfc-red text-white px-4 py-2 rounded-full font-bold text-xs uppercase tracking-widest">
+                                <Flame className="w-4 h-4" /> #1 Pollo Frito en Guatemala
+                            </div>
+                            <h1 className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.9] text-kfc-charcoal">
+                                Pollo
+                                <span className="text-kfc-orange"> Crujiente.</span>
+                                <br />
+                                Sabor que
+                                <span className="text-kfc-red"> Adicta.</span>
+                            </h1>
+                            <p className="text-lg md:text-xl text-kfc-charcoal/70 max-w-xl leading-relaxed">
+                                15 años marinando con 11 hierbas y especias. Empanizado a mano. Frito al momento. Servido con orgullo chapín.
                             </p>
-                        </div>
-                        
-                        <div className="relative flex items-center justify-center">
-                            <div className="absolute w-72 h-72 md:w-96 md:h-96 bg-white/20 rounded-full blur-3xl"></div>
-                            <img 
-                                src={slide.img} 
-                                alt={slide.title} 
-                                className="relative z-10 w-64 h-64 md:w-80 md:h-80 object-contain drop-shadow-[0_35px_35px_rgba(0,0,0,0.4)]"
-                            />
-                        </div>
-                    </div>
-                ))}
-
-                <div className="absolute bottom-10 left-0 right-0 flex justify-center gap-3 z-20">
-                    {slides.map((_, index) => (
-                        <button 
-                            key={index}
-                            onClick={() => setCurrentSlide(index)}
-                            className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentSlide ? "bg-white scale-125 w-12" : "bg-white/40"}`}
-                        />
-                    ))}
-                </div>
-            </div>
-
-            {/* SECCIÓN 2: BARRA BIENVENIDA */}
-            <div className="max-w-5xl mx-auto -mt-24 relative z-30 px-4">
-                <div className="bg-white rounded-[2.5rem] shadow-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between border border-gray-100 gap-6">
-                    <div className="flex items-center gap-6">
-                        <div className="w-16 h-16 bg-[#fef2f2] rounded-full flex items-center justify-center border border-red-50 shadow-inner">
-                            <SparklesIcon className="w-8 h-8 text-gray-700" />
-                        </div>
-                        <div>
-                            <h3 className="font-black text-2xl text-gray-800 tracking-tight leading-none">¡Bienvenido, Bradley!</h3>
-                            <p className="mt-1 text-sm text-gray-400 font-bold uppercase tracking-widest">Puntos Kinal: <span className="text-[#e11d48]">150</span></p>
-                        </div>
-                    </div>
-                    <div className="flex w-full md:w-auto gap-4">
-                        <button
-                            onClick={() => navigate('/portal/perfil')}
-                            className="flex-1 md:flex-none px-10 py-4 bg-[#facc15] hover:bg-yellow-500 text-red-900 font-black rounded-2xl text-xs uppercase tracking-[0.2em] transition-all shadow-lg active:scale-95"
-                        >
-                            Mi Cuenta
-                        </button>
-                        <button
-                            onClick={() => navigate('/portal/menu')}
-                            className="flex-1 md:flex-none px-10 py-4 bg-[#e11d48] hover:bg-red-700 text-white font-black rounded-2xl text-xs uppercase tracking-[0.2em] transition-all shadow-lg active:scale-95"
-                        >
-                            Ver Menú
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            {/* SECCIÓN 3: CARACTERÍSTICAS */}
-            <div className="grid md:grid-cols-3 gap-6 px-2">
-                <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-100 text-center">
-                    <TruckIcon className="w-12 h-12 text-[#e11d48] mx-auto mb-4" />
-                    <h4 className="font-bold text-gray-800 mb-2">Envío Rápido</h4>
-                    <p className="text-sm text-gray-600">Entrega en 20-30 minutos sin costo adicional</p>
-                </div>
-                <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-100 text-center">
-                    <ClockIcon className="w-12 h-12 text-[#fb923c] mx-auto mb-4" />
-                    <h4 className="font-bold text-gray-800 mb-2">Siempre Fresco</h4>
-                    <p className="text-sm text-gray-600">Preparado al momento con ingredientes de calidad</p>
-                </div>
-                <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-100 text-center">
-                    <SparklesIcon className="w-12 h-12 text-[#facc15] mx-auto mb-4" />
-                    <h4 className="font-bold text-gray-800 mb-2">Ofertas Especiales</h4>
-                    <p className="text-sm text-gray-600">Descuentos exclusivos cada semana</p>
-                </div>
-            </div>
-
-            {/* SECCIÓN 4: GRID DE CATEGORÍAS */}
-            <div className="px-2">
-                <h2 className="text-3xl font-black text-[#7f1d1d] mb-8">Nuestras Especialidades</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {menuCategories.map((cat) => (
-                        <div 
-                            key={cat.id} 
-                            onClick={() => navigate('/portal/menu')}
-                            className={`${cat.span} ${cat.bg} rounded-[3rem] h-64 md:h-80 p-10 relative overflow-hidden group cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2`}
-                        >
-                            <div className="relative z-10 h-full flex flex-col justify-between items-start">
-                                <h3 className={`text-4xl md:text-5xl font-black w-[60%] leading-[0.85] tracking-tighter ${cat.text} group-hover:scale-105 transition-transform origin-top-left`}>
-                                    {cat.title}
-                                </h3>
-                                
-                                <button className={`px-8 py-3 rounded-2xl font-black text-[11px] uppercase tracking-[0.25em] shadow-md transition-all hover:translate-y-[-4px]
-                                    ${cat.bg === 'bg-[#facc15]' ? 'bg-white text-red-700' : 'bg-[#facc15] text-red-900'}
-                                `}>
-                                    Seleccionar
+                            <div className="flex flex-wrap gap-3">
+                                <button
+                                    onClick={() => navigate("/portal/menu")}
+                                    className="rounded-full bg-kfc-red hover:bg-kfc-red-dark text-white font-bold uppercase tracking-wider px-8 py-4 text-base shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 inline-flex items-center gap-2"
+                                >
+                                    Ordenar Ahora <ArrowRight className="w-5 h-5" />
+                                </button>
+                                <button
+                                    onClick={() => navigate("/portal/menu")}
+                                    className="rounded-full border-2 border-kfc-charcoal text-kfc-charcoal hover:bg-kfc-charcoal hover:text-white font-bold uppercase tracking-wider px-8 py-4 text-base transition-colors"
+                                >
+                                    Ver Menú
                                 </button>
                             </div>
-
-                            <div className="absolute -bottom-8 -right-10 w-56 h-56 md:w-72 md:h-72 group-hover:scale-110 transition-transform duration-700 drop-shadow-[0_20px_20px_rgba(0,0,0,0.3)]">
-                                <img 
-                                    src={cat.img} 
-                                    alt={cat.title} 
-                                    className="w-full h-full object-contain"
-                                />
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* SECCIÓN 5: TESTIMONIOS */}
-            <div className="px-2 bg-gradient-to-br from-[#ffe6ed] to-[#fff5cc] rounded-3xl p-12">
-                <h2 className="text-3xl font-black text-[#7f1d1d] mb-8 text-center">Lo que Dicen Nuestros Clientes</h2>
-                <div className="grid md:grid-cols-3 gap-6">
-                    {testimonials.map((test, idx) => (
-                        <div key={idx} className="bg-white rounded-2xl p-6 shadow-md">
-                            <div className="flex items-center gap-4 mb-4">
-                                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
-                                    <UserIcon className="w-6 h-6 text-gray-600" />
+                            <div className="flex items-center gap-6 pt-4">
+                                <div className="flex -space-x-3">
+                                    {[12, 47, 33, 65].map((i) => (
+                                        <img
+                                            key={i}
+                                            src={`https://i.pravatar.cc/80?img=${i}`}
+                                            alt=""
+                                            className="w-11 h-11 rounded-full border-3 border-kfc-cream"
+                                        />
+                                    ))}
                                 </div>
                                 <div>
-                                    <h4 className="font-bold text-gray-800">{test.name}</h4>
-                                    <div className="flex gap-1">
-                                        {[...Array(test.rating)].map((_, i) => (
-                                            <StarIcon key={i} className="w-4 h-4 text-gray-700" />
+                                    <div className="flex text-kfc-yellow">
+                                        {[...Array(5)].map((_, i) => (
+                                            <Star key={i} className="w-4 h-4 fill-kfc-yellow" />
                                         ))}
+                                    </div>
+                                    <p className="text-sm font-bold text-kfc-charcoal">+85K clientes felices</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="lg:col-span-5 relative">
+                            <div className="relative aspect-square">
+                                <div className="absolute inset-0 bg-kfc-orange rounded-full animate-spin-slow opacity-90" />
+                                <img
+                                    src="https://images.unsplash.com/photo-1579065497397-2824d41272ce?crop=entropy&cs=srgb&fm=jpg&w=900&q=85"
+                                    alt="Pollo crujiente"
+                                    className="absolute inset-0 w-full h-full object-cover rounded-full p-4 animate-float"
+                                />
+                                <div className="absolute -top-4 -right-4 bg-kfc-yellow text-kfc-charcoal font-display text-2xl rounded-full w-28 h-28 flex flex-col items-center justify-center rotate-12 shadow-2xl border-4 border-white">
+                                    <span className="text-3xl leading-none">-25%</span>
+                                    <span className="text-[10px] font-heading uppercase tracking-wider">Hoy</span>
+                                </div>
+                                <div className="absolute -bottom-4 -left-4 bg-white rounded-2xl p-4 shadow-2xl border-2 border-kfc-charcoal/10 max-w-[200px]">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-10 h-10 rounded-full bg-kfc-red flex items-center justify-center">
+                                            <Truck className="w-5 h-5 text-white" />
+                                        </div>
+                                        <div>
+                                            <p className="font-bold text-sm">Delivery</p>
+                                            <p className="text-xs text-kfc-charcoal/60">En 30 min o gratis</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <p className="text-gray-600 text-sm italic">"{test.text}"</p>
                         </div>
-                    ))}
+                    </div>
                 </div>
-            </div>
 
-            {/* SECCIÓN 6: CTA FINAL */}
-            <div className="px-2 text-center">
-                <h2 className="text-3xl font-black text-[#7f1d1d] mb-4">¿Qué Esperas?</h2>
-                <p className="text-gray-600 mb-8 text-lg">Haz tu pedido ahora y disfruta del mejor pollo frito de Kinal</p>
-                <button
-                    onClick={() => navigate('/portal/menu')}
-                    className="bg-[#e11d48] hover:bg-[#be123c] text-white font-black py-5 px-12 rounded-2xl text-lg uppercase tracking-widest transition-all shadow-lg active:scale-95 inline-block"
-                >
-                    Ordenar Ahora
-                </button>
-            </div>
+                {/* Marquee */}
+                <div className="border-y-4 border-kfc-charcoal bg-kfc-yellow py-4 overflow-hidden">
+                    <div className="flex animate-marquee whitespace-nowrap">
+                        {[...Array(2)].map((_, idx) => (
+                            <div key={idx} className="flex items-center gap-12 pr-12">
+                                {["CRUJIENTE", "JUGOSO", "HECHO CON AMOR", "RECETA SECRETA", "100% CALIDAD", "DELIVERY GRATIS"].map((w, i) => (
+                                    <span key={i} className="font-display text-3xl text-kfc-charcoal flex items-center gap-12">
+                                        {w} <Drumstick className="w-6 h-6" />
+                                    </span>
+                                ))}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* STATS */}
+            <section className="py-20 bg-kfc-cream">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                        {STATS.map((s, i) => (
+                            <div key={i} className="bg-white rounded-3xl p-6 border-2 border-kfc-charcoal/5 hover:-translate-y-1 transition-transform duration-300">
+                                <Award className="w-8 h-8 text-kfc-orange mb-3" />
+                                <div className="font-display text-5xl text-kfc-charcoal">{s.value}</div>
+                                <div className="font-heading text-sm uppercase tracking-wider text-kfc-charcoal/60 mt-1">{s.label}</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* FEATURED MENU */}
+            <section className="py-20 bg-kfc-cream-dark grain-overlay">
+                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12">
+                        <div>
+                            <span className="font-heading text-sm uppercase tracking-[0.3em] text-kfc-red">Lo más pedido</span>
+                            <h2 className="font-display text-5xl md:text-6xl mt-2 text-kfc-charcoal leading-none">
+                                Sabores que <span className="text-kfc-orange">enloquecen</span>
+                            </h2>
+                        </div>
+                        <button onClick={() => navigate("/portal/menu")} className="font-heading text-sm uppercase tracking-widest hover:text-kfc-orange flex items-center gap-2 self-start">
+                            Ver todo el menú <ArrowRight className="w-4 h-4" />
+                        </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                        {featured.map((p, i) => (
+                            <button
+                                key={p.id}
+                                onClick={() => navigate("/portal/menu")}
+                                className={`group relative rounded-3xl overflow-hidden bg-white border-2 border-kfc-charcoal/5 hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 text-left ${i === 0 ? "md:row-span-2 md:col-span-1" : ""}`}
+                            >
+                                <div className={`relative overflow-hidden ${i === 0 ? "aspect-square lg:aspect-[4/5]" : "aspect-square"}`}>
+                                    <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                    {p.spicy && (
+                                        <span className="absolute top-3 left-3 bg-kfc-red text-white font-bold rounded-full px-3 py-1 text-xs flex items-center gap-1">
+                                            <Flame className="w-3 h-3" /> Picante
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="p-5">
+                                    <div className="flex items-center gap-1 text-kfc-yellow text-sm">
+                                        <Star className="w-4 h-4 fill-kfc-yellow" /> {p.rating}
+                                    </div>
+                                    <h3 className="font-heading text-lg uppercase mt-1">{p.name}</h3>
+                                    <div className="flex items-center justify-between mt-3">
+                                        <span className="font-display text-2xl text-kfc-orange">Q{p.price.toFixed(2)}</span>
+                                        <span className="w-9 h-9 rounded-full bg-kfc-charcoal text-white flex items-center justify-center group-hover:bg-kfc-orange transition-colors">
+                                            <ArrowRight className="w-4 h-4" />
+                                        </span>
+                                    </div>
+                                </div>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* COMBOS */}
+            <section className="py-20 bg-kfc-charcoal text-white relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-kfc-red rounded-full blur-3xl opacity-20" />
+                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-12">
+                        <span className="font-heading text-sm uppercase tracking-[0.3em] text-kfc-yellow">Ofertas Crispy</span>
+                        <h2 className="font-display text-5xl md:text-7xl mt-2 leading-none">
+                            Combos para <span className="text-kfc-yellow">compartir</span>
+                        </h2>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {COMBOS.slice(0, 3).map((c) => (
+                            <div key={c.id} className="bg-white text-kfc-charcoal rounded-3xl overflow-hidden hover:-translate-y-2 transition-transform duration-300 group">
+                                <div className="relative aspect-[5/3] overflow-hidden">
+                                    <img src={c.image} alt={c.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                    <span className="absolute top-4 left-4 bg-kfc-red text-white font-bold rounded-full px-3 py-1.5 text-xs">{c.badge}</span>
+                                    <div className="absolute top-4 right-4 bg-kfc-yellow text-kfc-charcoal font-display text-xl rounded-full w-16 h-16 flex items-center justify-center rotate-12">
+                                        -{c.discount}%
+                                    </div>
+                                </div>
+                                <div className="p-6">
+                                    <p className="font-heading text-xs uppercase tracking-widest text-kfc-orange">{c.tagline}</p>
+                                    <h3 className="font-heading text-2xl uppercase mt-1">{c.name}</h3>
+                                    <p className="text-sm text-kfc-charcoal/60 mt-1">{c.serves}</p>
+                                    <div className="flex items-end gap-2 mt-4">
+                                        <span className="font-display text-4xl text-kfc-red">Q{c.price.toFixed(0)}</span>
+                                        <span className="text-kfc-charcoal/40 line-through mb-1">Q{c.originalPrice.toFixed(0)}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="text-center mt-10">
+                        <button
+                            onClick={() => navigate("/portal/cupones")}
+                            className="rounded-full bg-kfc-yellow hover:bg-kfc-yellow-dark text-kfc-charcoal font-bold uppercase tracking-wider px-8 py-4 transition-colors"
+                        >
+                            Ver todos los combos
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            {/* TESTIMONIALS */}
+            <section className="py-20 bg-kfc-cream">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-12">
+                        <span className="font-heading text-sm uppercase tracking-[0.3em] text-kfc-red">Voces crujientes</span>
+                        <h2 className="font-display text-5xl md:text-6xl mt-2 text-kfc-charcoal leading-none">
+                            Lo que dicen <span className="text-kfc-orange">de nosotros</span>
+                        </h2>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-6">
+                        {TESTIMONIALS.map((t) => (
+                            <div key={t.id} className="bg-white rounded-3xl p-7 border-2 border-kfc-charcoal/5 hover:-translate-y-1 transition-transform">
+                                <div className="flex text-kfc-yellow mb-4">
+                                    {[...Array(t.rating)].map((_, i) => (
+                                        <Star key={i} className="w-5 h-5 fill-kfc-yellow" />
+                                    ))}
+                                </div>
+                                <p className="text-kfc-charcoal/80 leading-relaxed text-lg">"{t.quote}"</p>
+                                <div className="flex items-center gap-3 mt-6 pt-6 border-t border-kfc-charcoal/10">
+                                    <img src={t.avatar} alt={t.name} className="w-12 h-12 rounded-full" />
+                                    <div>
+                                        <p className="font-bold">{t.name}</p>
+                                        <p className="text-sm text-kfc-charcoal/60">{t.role}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* BRANCHES */}
+            <section className="py-20 bg-kfc-cream-dark">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-12">
+                        <span className="font-heading text-sm uppercase tracking-[0.3em] text-kfc-orange">Visítanos</span>
+                        <h2 className="font-display text-5xl md:text-6xl mt-2 text-kfc-charcoal leading-none">
+                            Nuestras <span className="text-kfc-red">sucursales</span>
+                        </h2>
+                    </div>
+                    <div className="grid md:grid-cols-3 gap-6">
+                        {BRANCHES.map((b) => (
+                            <div key={b.id} className="bg-white rounded-3xl overflow-hidden hover:-translate-y-1 transition-transform">
+                                <img src={b.image} alt={b.name} className="aspect-video w-full object-cover" />
+                                <div className="p-5">
+                                    <h3 className="font-heading text-lg uppercase">{b.name}</h3>
+                                    <p className="text-sm text-kfc-charcoal/60 mt-2">{b.address}</p>
+                                    <div className="flex items-center gap-2 mt-3 text-sm">
+                                        <Clock className="w-4 h-4 text-kfc-orange" /> {b.hours}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* FINAL CTA */}
+            <section className="py-20 bg-kfc-orange text-white relative overflow-hidden">
+                <div className="absolute inset-0 grain-overlay opacity-50" />
+                <div className="relative max-w-5xl mx-auto px-4 text-center">
+                    <h2 className="font-display text-5xl md:text-7xl leading-none">
+                        ¿Tienes hambre de algo <span className="text-kfc-yellow">crujiente</span>?
+                    </h2>
+                    <p className="text-xl mt-6 text-white/90 max-w-2xl mx-auto">
+                        Reserva una mesa, ordena online o ven a probar el sabor que tiene a Guatemala enamorada.
+                    </p>
+                    <div className="flex flex-wrap justify-center gap-3 mt-8">
+                        <button
+                            onClick={() => navigate("/portal/reservas")}
+                            className="rounded-full bg-kfc-charcoal hover:bg-black text-white font-bold uppercase tracking-wider px-8 py-4 inline-flex items-center gap-2 transition-colors"
+                        >
+                            <Users className="w-4 h-4" /> Reservar Mesa
+                        </button>
+                        <button
+                            onClick={() => navigate("/portal/menu")}
+                            className="rounded-full bg-kfc-yellow hover:bg-kfc-yellow-dark text-kfc-charcoal font-bold uppercase tracking-wider px-8 py-4 transition-colors"
+                        >
+                            Ordenar Ahora
+                        </button>
+                    </div>
+                </div>
+            </section>
         </div>
     );
 };

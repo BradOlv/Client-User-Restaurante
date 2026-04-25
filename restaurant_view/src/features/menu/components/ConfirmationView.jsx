@@ -1,52 +1,63 @@
 import { useNavigate } from "react-router-dom";
+import { CheckCircle2, Clock, MapPin, Phone } from "lucide-react";
 
 export const ConfirmationView = () => {
     const navigate = useNavigate();
-
-    const camperoDark = "#4a3728";
-    const titleStyle = { color: camperoDark, fontWeight: '700', textTransform: 'uppercase' };
-    const bodyTextStyle = { color: camperoDark, fontWeight: '500' };
+    const orderId = "KFC-" + Math.floor(1000 + Math.random() * 9000);
 
     return (
-        <div className="bg-[#fdfaf5] min-h-screen flex items-center justify-center py-10 px-6">
-            <div className="max-w-md w-full bg-white rounded-[40px] shadow-xl p-10 text-center border border-orange-50">
-                
-                {/* Icono de Éxito Animado (Simulado) */}
-                <div className="w-24 h-24 bg-[#d4e157] rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg shadow-lime-100">
-                    <span className="text-5xl text-white">✓</span>
-                </div>
+        <div className="bg-kfc-cream min-h-screen flex items-center justify-center p-6 py-16">
+            <div className="bg-white rounded-3xl border-2 border-kfc-orange/20 p-8 md:p-12 max-w-2xl w-full text-center grain-overlay relative overflow-hidden">
+                <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-kfc-yellow/30 blur-3xl" />
+                <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full bg-kfc-orange/20 blur-3xl" />
 
-                <h1 style={titleStyle} className="text-3xl mb-4 tracking-tighter">
-                    ¡Pedido Recibido!
-                </h1>
-                
-                <p style={bodyTextStyle} className="text-lg mb-8">
-                    Tu orden <span className="font-bold">#1254</span> está siendo preparada con el sabor de Campero.
-                </p>
+                <div className="relative">
+                    <div className="w-24 h-24 bg-kfc-orange-light rounded-full flex items-center justify-center mx-auto mb-6">
+                        <CheckCircle2 className="w-14 h-14 text-kfc-orange" />
+                    </div>
 
-                <div className="bg-[#fdfaf5] rounded-2xl p-6 mb-8 border border-orange-50">
-                    <p style={{...bodyTextStyle, fontSize: '0.9rem'}} className="uppercase tracking-widest opacity-60 mb-1">
-                        Tiempo estimado
+                    <span className="font-heading text-xs uppercase tracking-[0.3em] text-kfc-red">
+                        Pedido confirmado
+                    </span>
+                    <h1 className="font-display text-4xl md:text-6xl mt-2 leading-none text-kfc-charcoal">
+                        ¡Listo, a <span className="text-kfc-orange">comer</span>!
+                    </h1>
+                    <p className="text-kfc-charcoal/70 mt-4 text-lg">
+                        Tu pedido <span className="font-bold text-kfc-charcoal">#{orderId}</span> está siendo preparado con todo el sabor Kinal.
                     </p>
-                    <p className="text-2xl font-black text-[#ff6b0b]">
-                        30 - 45 MIN
-                    </p>
-                </div>
 
-                <div className="space-y-4">
-                    <button 
-                        onClick={() => navigate('/portal/menu')}
-                        className="w-full py-4 bg-[#ff6b0b] text-white font-bold rounded-2xl shadow-lg uppercase tracking-widest hover:brightness-110 transition-all"
-                    >
-                        Volver al Menú
-                    </button>
-                    
-                    <button 
-                        onClick={() => navigate('/portal/perfil')}
-                        className="w-full py-4 text-gray-400 font-bold uppercase tracking-widest text-sm hover:text-[#4a3728]"
-                    >
-                        Rastrear mi pedido
-                    </button>
+                    <div className="grid sm:grid-cols-3 gap-3 mt-8 text-left">
+                        <div className="bg-kfc-cream-dark rounded-2xl p-4">
+                            <Clock className="w-5 h-5 text-kfc-orange mb-2" />
+                            <p className="font-heading text-xs uppercase tracking-widest text-kfc-charcoal/60">Tiempo estimado</p>
+                            <p className="font-bold text-sm mt-1">25 - 35 minutos</p>
+                        </div>
+                        <div className="bg-kfc-cream-dark rounded-2xl p-4">
+                            <MapPin className="w-5 h-5 text-kfc-orange mb-2" />
+                            <p className="font-heading text-xs uppercase tracking-widest text-kfc-charcoal/60">Estado</p>
+                            <p className="font-bold text-sm mt-1">En cocina</p>
+                        </div>
+                        <div className="bg-kfc-cream-dark rounded-2xl p-4">
+                            <Phone className="w-5 h-5 text-kfc-orange mb-2" />
+                            <p className="font-heading text-xs uppercase tracking-widest text-kfc-charcoal/60">Contacto</p>
+                            <p className="font-bold text-sm mt-1">+502 2345-6700</p>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-3 mt-10 justify-center">
+                        <button
+                            onClick={() => navigate("/portal/pedidos")}
+                            className="rounded-full bg-kfc-orange hover:bg-kfc-orange-dark text-white font-bold uppercase tracking-wider px-6 py-4 transition-colors"
+                        >
+                            Ver mis pedidos
+                        </button>
+                        <button
+                            onClick={() => navigate("/portal")}
+                            className="rounded-full border-2 border-kfc-charcoal text-kfc-charcoal hover:bg-kfc-charcoal hover:text-white font-bold uppercase tracking-wider px-6 py-4 transition-colors"
+                        >
+                            Volver al inicio
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

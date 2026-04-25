@@ -1,75 +1,98 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { Mail, Lock, User } from "lucide-react";
+import toast from "react-hot-toast";
 
 export const ClientLoginForm = ({ isLogin, setIsLogin, onForgot }) => {
     const navigate = useNavigate();
 
- const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Botón presionado, redirigiendo..."); 
-    navigate('/portal'); 
-};
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        toast.success(isLogin ? "¡Bienvenido de vuelta!" : "¡Cuenta creada con éxito!");
+        setTimeout(() => navigate("/portal"), 600);
+    };
 
     return (
-        <div className="space-y-6 animate-fadeIn">
-            <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-5 animate-fadeIn">
+            <form onSubmit={handleSubmit} className="space-y-5">
                 {!isLogin && (
                     <div>
-                        <label className="block text-xs font-bold text-[#a16207] uppercase mb-1">Nombre Completo</label>
-                        <input 
-                            type="text" 
-                            required
-                            className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:border-[#fb923c] focus:ring-2 focus:ring-orange-100 transition-all" 
-                            placeholder="Tu nombre" 
-                        />
+                        <label className="font-heading text-xs uppercase tracking-widest text-kfc-charcoal/60 block">
+                            Nombre completo
+                        </label>
+                        <div className="relative mt-2">
+                            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-kfc-charcoal/40" />
+                            <input
+                                type="text"
+                                required
+                                placeholder="Tu nombre"
+                                className="w-full pl-11 pr-4 py-3 rounded-xl border-2 border-kfc-charcoal/10 bg-white outline-none focus:border-kfc-orange transition-colors"
+                            />
+                        </div>
                     </div>
                 )}
-                
+
                 <div>
-                    <label className="block text-xs font-bold text-[#a16207] uppercase mb-1">Correo Electrónico</label>
-                    <input 
-                        type="email" 
-                        required
-                        className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:border-[#fb923c] focus:ring-2 focus:ring-orange-100 transition-all" 
-                        placeholder="tu-correo@kinal.edu.gt" 
-                    />
+                    <label className="font-heading text-xs uppercase tracking-widest text-kfc-charcoal/60 block">
+                        Correo electrónico
+                    </label>
+                    <div className="relative mt-2">
+                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-kfc-charcoal/40" />
+                        <input
+                            type="email"
+                            required
+                            placeholder="tu@email.com"
+                            className="w-full pl-11 pr-4 py-3 rounded-xl border-2 border-kfc-charcoal/10 bg-white outline-none focus:border-kfc-orange transition-colors"
+                        />
+                    </div>
                 </div>
 
                 <div>
-                    <div className="flex justify-between items-center mb-1">
-                        <label className="text-xs font-bold text-[#a16207] uppercase">Contraseña</label>
+                    <div className="flex justify-between items-center">
+                        <label className="font-heading text-xs uppercase tracking-widest text-kfc-charcoal/60">
+                            Contraseña
+                        </label>
                         {isLogin && (
-                            <button 
+                            <button
                                 type="button"
                                 onClick={onForgot}
-                                className="text-[10px] font-bold text-orange-600 hover:text-red-600 transition-colors"
+                                className="text-xs font-bold text-kfc-orange hover:underline"
                             >
-                                ¿OLVIDASTE TU CLAVE?
+                                ¿Olvidaste?
                             </button>
                         )}
                     </div>
-                    <input 
-                        type="password" 
-                        required
-                        className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:border-[#fb923c] focus:ring-2 focus:ring-orange-100 transition-all" 
-                        placeholder="********" 
-                    />
+                    <div className="relative mt-2">
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-kfc-charcoal/40" />
+                        <input
+                            type="password"
+                            required
+                            placeholder="••••••••"
+                            className="w-full pl-11 pr-4 py-3 rounded-xl border-2 border-kfc-charcoal/10 bg-white outline-none focus:border-kfc-orange transition-colors"
+                        />
+                    </div>
                 </div>
 
-                <button 
-                    type="submit" 
-                    className="w-full bg-[#e11d48] hover:bg-red-700 text-white font-black py-3 rounded-xl text-sm shadow-lg transition-all active:scale-95 mt-4"
+                <button
+                    type="submit"
+                    className={`w-full rounded-full text-white font-bold uppercase tracking-wider py-4 text-base shadow-lg transition-all hover:-translate-y-0.5 active:scale-95 ${
+                        isLogin
+                            ? "bg-kfc-red hover:bg-kfc-red-dark"
+                            : "bg-kfc-orange hover:bg-kfc-orange-dark"
+                    }`}
                 >
-                    {isLogin ? 'INGRESAR A COMER' : 'CREAR MI CUENTA'}
+                    {isLogin ? "Ingresar a comer" : "Crear mi cuenta"}
                 </button>
             </form>
 
             <div className="text-center pt-2">
-                <button 
+                <button
                     type="button"
                     onClick={() => setIsLogin(!isLogin)}
-                    className="text-xs font-bold text-[#a16207] hover:text-red-600 transition-colors"
+                    className="text-sm font-bold text-kfc-charcoal/60 hover:text-kfc-orange transition-colors"
                 >
-                    {isLogin ? "¿No tienes cuenta? Regístrate aquí" : "¿Ya tienes cuenta? Inicia sesión"}
+                    {isLogin
+                        ? "¿No tienes cuenta? Regístrate aquí"
+                        : "¿Ya tienes cuenta? Inicia sesión"}
                 </button>
             </div>
         </div>

@@ -1,208 +1,185 @@
-import { useState } from 'react';
-import { CalendarIcon, ClockIcon, UsersIcon, MapPinIcon } from '@heroicons/react/24/outline';
+import { useState } from "react";
+import { DayPicker } from "react-day-picker";
+import { es } from "date-fns/locale";
+import "react-day-picker/style.css";
+import { CheckCircle2, Users, MapPin, Clock } from "lucide-react";
+import toast from "react-hot-toast";
+import { BRANCHES } from "../../../shared/data/mockData";
+
+const TIME_SLOTS = ["12:00", "12:30", "13:00", "13:30", "14:00", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00"];
 
 export const ReservationPage = () => {
-    const [formData, setFormData] = useState({
-        date: '',
-        time: '',
-        guests: 2,
-        name: '',
-        phone: '',
-        email: '',
-        specialRequests: ''
-    });
+    const [date, setDate] = useState(new Date());
+    const [time, setTime] = useState("");
+    const [size, setSize] = useState("2");
+    const [branch, setBranch] = useState(BRANCHES[0].id);
+    const [name, setName] = useState("");
+    const [phone, setPhone] = useState("");
+    const [submitted, setSubmitted] = useState(false);
 
-    const [isSubmitted, setIsSubmitted] = useState(false);
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
-    const handleSubmit = (e) => {
+    const submit = (e) => {
         e.preventDefault();
-        console.log('Reserva enviada:', formData);
-        setIsSubmitted(true);
-        setTimeout(() => setIsSubmitted(false), 3000);
+        if (!name || !phone || !time) {
+            toast.error("Por favor completa todos los campos");
+            return;
+        }
+        setSubmitted(true);
+        toast.success("¡Reservación confirmada!");
     };
 
-    return (
-        <div className="min-h-screen bg-[#fdfcf0] py-12">
-            <div className="max-w-4xl mx-auto px-6">
-                {/* Header */}
-                <div className="text-center mb-12">
-                    <h1 className="text-5xl font-black text-[#7f1d1d] mb-2 tracking-tight">
-                        Reserva tu Mesa
-                    </h1>
-                    <p className="text-gray-600 text-lg">Asegura tu lugar en Kinal Fried Chicken</p>
-                </div>
-
-                {isSubmitted && (
-                    <div className="mb-8 p-6 bg-green-100 border-l-4 border-green-500 text-green-800 rounded-lg">
-                        <p className="font-bold text-lg">¡Reserva confirmada!</p>
-                        <p>Te enviaremos un correo de confirmación en breve.</p>
+    if (submitted) {
+        return (
+            <div className="min-h-[80vh] bg-kfc-cream flex items-center justify-center px-4 py-16">
+                <div className="bg-white rounded-3xl p-10 md:p-14 max-w-xl text-center border-2 border-kfc-orange/20">
+                    <div className="w-20 h-20 bg-kfc-orange-light rounded-full flex items-center justify-center mx-auto mb-5">
+                        <CheckCircle2 className="w-10 h-10 text-kfc-orange" />
                     </div>
-                )}
-
-                <div className="grid md:grid-cols-3 gap-8">
-                    {/* Formulario */}
-                    <div className="md:col-span-2 bg-white rounded-3xl p-8 shadow-lg border border-gray-100">
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            {/* Fecha */}
-                            <div>
-                                <label className="block text-sm font-bold text-[#7f1d1d] mb-2 flex items-center gap-2">
-                                    <CalendarIcon className="w-5 h-5" />
-                                    Fecha
-                                </label>
-                                <input
-                                    type="date"
-                                    name="date"
-                                    value={formData.date}
-                                    onChange={handleChange}
-                                    required
-                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#e11d48]"
-                                />
-                            </div>
-
-                            {/* Hora */}
-                            <div>
-                                <label className="block text-sm font-bold text-[#7f1d1d] mb-2 flex items-center gap-2">
-                                    <ClockIcon className="w-5 h-5" />
-                                    Hora
-                                </label>
-                                <input
-                                    type="time"
-                                    name="time"
-                                    value={formData.time}
-                                    onChange={handleChange}
-                                    required
-                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#e11d48]"
-                                />
-                            </div>
-
-                            {/* Número de Personas */}
-                            <div>
-                                <label className="block text-sm font-bold text-[#7f1d1d] mb-2 flex items-center gap-2">
-                                    <UsersIcon className="w-5 h-5" />
-                                    Número de Personas
-                                </label>
-                                <select
-                                    name="guests"
-                                    value={formData.guests}
-                                    onChange={handleChange}
-                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#e11d48]"
-                                >
-                                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
-                                        <option key={num} value={num}>{num} {num === 1 ? 'Persona' : 'Personas'}</option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            {/* Nombre */}
-                            <div>
-                                <label className="block text-sm font-bold text-[#7f1d1d] mb-2">Nombre Completo</label>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    placeholder="Tu nombre"
-                                    required
-                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#e11d48]"
-                                />
-                            </div>
-
-                            {/* Teléfono */}
-                            <div>
-                                <label className="block text-sm font-bold text-[#7f1d1d] mb-2">Teléfono</label>
-                                <input
-                                    type="tel"
-                                    name="phone"
-                                    value={formData.phone}
-                                    onChange={handleChange}
-                                    placeholder="+502 XXXX XXXX"
-                                    required
-                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#e11d48]"
-                                />
-                            </div>
-
-                            {/* Email */}
-                            <div>
-                                <label className="block text-sm font-bold text-[#7f1d1d] mb-2">Correo Electrónico</label>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    placeholder="tu@email.com"
-                                    required
-                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#e11d48]"
-                                />
-                            </div>
-
-                            {/* Solicitudes Especiales */}
-                            <div>
-                                <label className="block text-sm font-bold text-[#7f1d1d] mb-2">Solicitudes Especiales</label>
-                                <textarea
-                                    name="specialRequests"
-                                    value={formData.specialRequests}
-                                    onChange={handleChange}
-                                    placeholder="Alergias, ocasión especial, etc."
-                                    rows="4"
-                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#e11d48]"
-                                />
-                            </div>
-
-                            <button
-                                type="submit"
-                                className="w-full bg-[#e11d48] hover:bg-[#be123c] text-white font-bold py-4 rounded-2xl text-lg uppercase tracking-widest transition-all shadow-lg active:scale-95"
-                            >
-                                Confirmar Reserva
-                            </button>
-                        </form>
-                    </div>
-
-                    {/* Info Lateral */}
-                    <div className="space-y-6">
-                        <div className="bg-[#fffaf2] rounded-3xl p-6 border-2 border-[#e11d48]">
-                            <h3 className="font-black text-[#7f1d1d] text-lg mb-4">Horario de Atención</h3>
-                            <div className="space-y-2 text-sm text-gray-700">
-                                <p><strong>Lunes - Viernes:</strong> 11:00 AM - 11:00 PM</p>
-                                <p><strong>Sábado:</strong> 10:00 AM - 12:00 AM</p>
-                                <p><strong>Domingo:</strong> 10:00 AM - 11:00 PM</p>
-                            </div>
-                        </div>
-
-                        <div className="bg-gradient-to-br from-[#fb923c] to-[#e11d48] rounded-3xl p-6 text-white">
-                            <h3 className="font-black text-lg mb-4 flex items-center gap-2">
-                                <MapPinIcon className="w-5 h-5" />
-                                Ubicación
-                            </h3>
-                            <p className="text-sm mb-4">Centro Comercial Kinal</p>
-                            <button className="w-full bg-white text-[#e11d48] font-bold py-2 rounded-xl hover:bg-gray-100 transition-all">
-                                Ver en Mapa
-                            </button>
-                        </div>
-
-                        <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-md">
-                            <h3 className="font-black text-[#7f1d1d] mb-4">Preguntas Frecuentes</h3>
-                            <div className="space-y-3 text-sm">
-                                <div>
-                                    <p className="font-bold text-gray-800">¿Cuándo puedo cancelar?</p>
-                                    <p className="text-gray-600">Hasta 24 horas antes</p>
-                                </div>
-                                <div>
-                                    <p className="font-bold text-gray-800">¿Hay costo por reserva?</p>
-                                    <p className="text-gray-600">No, es completamente gratis</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <h2 className="font-display text-4xl md:text-5xl text-kfc-charcoal">¡Confirmada!</h2>
+                    <p className="text-kfc-charcoal/70 mt-3 leading-relaxed">
+                        Hola <span className="font-bold">{name}</span>, tu mesa para <span className="font-bold">{size} personas</span> está reservada el{" "}
+                        <span className="font-bold">{date.toLocaleDateString("es-GT")}</span> a las <span className="font-bold">{time}</span>.
+                    </p>
+                    <button
+                        onClick={() => setSubmitted(false)}
+                        className="mt-8 rounded-full bg-kfc-orange hover:bg-kfc-orange-dark text-white font-bold uppercase tracking-wider px-6 py-3 transition-colors"
+                    >
+                        Nueva reservación
+                    </button>
                 </div>
             </div>
+        );
+    }
+
+    return (
+        <div className="bg-kfc-cream min-h-screen">
+            <section className="relative py-16 bg-gradient-to-br from-kfc-orange to-kfc-red text-white grain-overlay overflow-hidden">
+                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <span className="font-heading text-sm uppercase tracking-[0.3em] text-kfc-yellow">
+                        Tu mesa te espera
+                    </span>
+                    <h1 className="font-display text-5xl md:text-7xl lg:text-8xl mt-3 leading-none">
+                        Reserva tu <span className="text-kfc-yellow">lugar</span>
+                    </h1>
+                    <p className="text-white/90 mt-4 max-w-2xl mx-auto">
+                        Asegura tu mesa en segundos. Sin filas, sin estrés, solo sabor.
+                    </p>
+                </div>
+            </section>
+
+            <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <form
+                    onSubmit={submit}
+                    className="bg-white rounded-3xl border-2 border-kfc-charcoal/5 p-6 md:p-10 grid lg:grid-cols-2 gap-10"
+                >
+                    <div>
+                        <h3 className="font-heading text-xl uppercase mb-4 flex items-center gap-2">
+                            <Clock className="text-kfc-orange w-5 h-5" /> Selecciona fecha
+                        </h3>
+                        <div className="bg-kfc-cream rounded-2xl p-3">
+                            <DayPicker
+                                mode="single"
+                                selected={date}
+                                onSelect={(d) => d && setDate(d)}
+                                locale={es}
+                                disabled={{ before: new Date() }}
+                            />
+                        </div>
+                        <div className="mt-6">
+                            <h3 className="font-heading text-xs uppercase tracking-widest mb-3 text-kfc-charcoal/60">
+                                Hora disponible
+                            </h3>
+                            <div className="grid grid-cols-4 gap-2">
+                                {TIME_SLOTS.map((t) => (
+                                    <button
+                                        key={t}
+                                        type="button"
+                                        onClick={() => setTime(t)}
+                                        className={`py-2.5 rounded-xl font-bold text-sm border-2 transition-all ${
+                                            time === t
+                                                ? "bg-kfc-orange text-white border-kfc-orange"
+                                                : "bg-kfc-cream border-transparent hover:border-kfc-orange/30"
+                                        }`}
+                                    >
+                                        {t}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="space-y-5">
+                        <h3 className="font-heading text-xl uppercase flex items-center gap-2">
+                            <Users className="text-kfc-orange w-5 h-5" /> Tus datos
+                        </h3>
+
+                        <div>
+                            <label className="font-heading text-xs uppercase tracking-widest text-kfc-charcoal/60">Sucursal</label>
+                            <select
+                                value={branch}
+                                onChange={(e) => setBranch(e.target.value)}
+                                className="mt-2 w-full px-4 py-3 rounded-xl border-2 border-kfc-charcoal/10 bg-white focus:border-kfc-orange outline-none"
+                            >
+                                {BRANCHES.map((b) => (
+                                    <option key={b.id} value={b.id}>{b.name}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label className="font-heading text-xs uppercase tracking-widest text-kfc-charcoal/60">Personas</label>
+                            <select
+                                value={size}
+                                onChange={(e) => setSize(e.target.value)}
+                                className="mt-2 w-full px-4 py-3 rounded-xl border-2 border-kfc-charcoal/10 bg-white focus:border-kfc-orange outline-none"
+                            >
+                                {[1, 2, 3, 4, 5, 6, 8, 10, 12].map((n) => (
+                                    <option key={n} value={String(n)}>{n} {n === 1 ? "persona" : "personas"}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label className="font-heading text-xs uppercase tracking-widest text-kfc-charcoal/60">Nombre completo</label>
+                            <input
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                placeholder="Tu nombre"
+                                className="mt-2 w-full px-4 py-3 rounded-xl border-2 border-kfc-charcoal/10 focus:border-kfc-orange outline-none"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="font-heading text-xs uppercase tracking-widest text-kfc-charcoal/60">Teléfono</label>
+                            <input
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                placeholder="+502 0000-0000"
+                                className="mt-2 w-full px-4 py-3 rounded-xl border-2 border-kfc-charcoal/10 focus:border-kfc-orange outline-none"
+                            />
+                        </div>
+
+                        <div className="bg-kfc-yellow-light rounded-2xl p-4 border-2 border-kfc-yellow/40">
+                            <p className="text-xs font-heading uppercase tracking-widest text-kfc-charcoal/70">Resumen</p>
+                            <p className="font-bold mt-2 text-sm">
+                                {date.toLocaleDateString("es-GT", { weekday: "long", day: "numeric", month: "long" })}
+                                {time && ` · ${time}`}
+                                {` · ${size} personas`}
+                            </p>
+                            <p className="text-xs text-kfc-charcoal/60 mt-1 flex items-start gap-1">
+                                <MapPin className="w-3 h-3 mt-0.5" />
+                                {BRANCHES.find((b) => b.id === branch)?.name}
+                            </p>
+                        </div>
+
+                        <button
+                            type="submit"
+                            className="w-full rounded-full bg-kfc-red hover:bg-kfc-red-dark text-white font-bold uppercase tracking-wider py-4 text-base transition-colors"
+                        >
+                            Confirmar Reservación
+                        </button>
+                    </div>
+                </form>
+            </section>
         </div>
     );
 };

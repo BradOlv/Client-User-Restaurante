@@ -1,229 +1,111 @@
-import { useState } from 'react';
-import { StarIcon } from '@heroicons/react/24/solid';
-import { StarIcon as StarOutlineIcon } from '@heroicons/react/24/outline';
+import { useState } from "react";
+import { Star, Send } from "lucide-react";
+import toast from "react-hot-toast";
+import { REVIEWS } from "../../../shared/data/mockData";
 
 export const ReviewPage = () => {
-    const [reviews] = useState([
-        {
-            id: 1,
-            author: 'María González',
-            rating: 5,
-            date: '2026-04-20',
-            title: '¡Excelente servicio y comida deliciosa!',
-            text: 'La comida llegó en perfecto estado y muy caliente. El pollo estaba crujiente y jugoso. Definitivamente volveré a pedir.',
-            verified: true,
-            helpful: 24
-        },
-        {
-            id: 2,
-            author: 'Juan López',
-            rating: 4,
-            date: '2026-04-18',
-            title: 'Muy buen sabor, entrega rápida',
-            text: 'El pedido llegó más rápido de lo esperado. La pizza estaba muy buena aunque la bebida llegó un poco tibia.',
-            verified: true,
-            helpful: 15
-        },
-        {
-            id: 3,
-            author: 'Sofia Rodríguez',
-            rating: 5,
-            date: '2026-04-15',
-            title: 'Mejor comida rápida de la ciudad',
-            text: 'Siempre pido aquí. La calidad es consistente, el equipo es amable y los precios son justos. 100% recomendado.',
-            verified: true,
-            helpful: 32
-        }
-    ]);
+    const [rating, setRating] = useState(5);
+    const [hover, setHover] = useState(0);
+    const [comment, setComment] = useState("");
 
-    const [newReview, setNewReview] = useState({
-        rating: 0,
-        title: '',
-        text: '',
-        orderId: ''
-    });
-
-    const [showForm, setShowForm] = useState(false);
-
-    const handleRatingClick = (rating) => {
-        setNewReview(prev => ({ ...prev, rating }));
-    };
-
-    const handleSubmit = (e) => {
+    const submit = (e) => {
         e.preventDefault();
-        console.log('Reseña enviada:', newReview);
-        setNewReview({ rating: 0, title: '', text: '', orderId: '' });
-        setShowForm(false);
-    };
-
-    const renderStars = (rating, interactive = false) => {
-        return (
-            <div className="flex gap-1">
-                {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                        key={star}
-                        onClick={() => interactive && handleRatingClick(star)}
-                        className={interactive ? 'cursor-pointer hover:scale-110 transition-transform' : 'cursor-default'}
-                        type={interactive ? 'button' : 'button'}
-                    >
-                        {star <= rating ? (
-                            <StarIcon className="w-6 h-6 text-yellow-400" />
-                        ) : (
-                            <StarOutlineIcon className="w-6 h-6 text-gray-300" />
-                        )}
-                    </button>
-                ))}
-            </div>
-        );
+        if (!comment) {
+            toast.error("Escribe tu reseña");
+            return;
+        }
+        toast.success("¡Gracias por tu reseña!");
+        setComment("");
     };
 
     return (
-        <div className="min-h-screen bg-[#fdfcf0] py-12">
-            <div className="max-w-5xl mx-auto px-6">
-                {/* Header */}
-                <div className="mb-12">
-                    <h1 className="text-5xl font-black text-[#7f1d1d] mb-2 tracking-tight">Reseñas de Clientes</h1>
-                    <p className="text-gray-600 text-lg">Lee experiencias reales de otros clientes</p>
+        <div className="bg-kfc-cream min-h-screen">
+            <section className="relative py-16 bg-kfc-yellow text-kfc-charcoal grain-overlay overflow-hidden">
+                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <span className="font-heading text-sm uppercase tracking-[0.3em] text-kfc-red">Tu opinión cuenta</span>
+                    <h1 className="font-display text-5xl md:text-7xl mt-3 leading-none">
+                        Reseñas <span className="text-kfc-red">crujientes</span>
+                    </h1>
+                    <p className="text-kfc-charcoal/80 mt-4 max-w-2xl mx-auto">
+                        Cuéntanos qué te pareció tu última visita o pedido. Tu feedback nos hace mejores.
+                    </p>
                 </div>
+            </section>
 
-                <div className="grid lg:grid-cols-3 gap-8">
-                    {/* Reseñas */}
-                    <div className="lg:col-span-2 space-y-4">
-                        {reviews.map((review) => (
-                            <div key={review.id} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-md hover:shadow-lg transition-all">
-                                <div className="flex items-start justify-between mb-4">
-                                    <div>
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <h3 className="font-bold text-gray-800">{review.author}</h3>
-                                            {review.verified && (
-                                                <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-bold">✓ Verificado</span>
-                                            )}
-                                        </div>
-                                        <div className="flex items-center gap-3">
-                                            {renderStars(review.rating)}
-                                            <p className="text-xs text-gray-500">{review.date}</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <h4 className="font-bold text-gray-800 mb-2">{review.title}</h4>
-                                <p className="text-gray-600 mb-4 leading-relaxed">{review.text}</p>
-
-                                <div className="flex items-center gap-4 text-sm text-gray-500">
-                                    <button className="hover:text-[#e11d48] transition-colors font-semibold">
-                                        👍 Útil ({review.helpful})
+            <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                {/* Form */}
+                <div className="bg-white rounded-3xl border-2 border-kfc-charcoal/5 p-6 md:p-8 mb-10">
+                    <h3 className="font-heading text-xl uppercase mb-4">Escribe tu reseña</h3>
+                    <form onSubmit={submit} className="space-y-5">
+                        <div>
+                            <label className="font-heading text-xs uppercase tracking-widest text-kfc-charcoal/60">Tu calificación</label>
+                            <div className="flex gap-1 mt-2">
+                                {[1, 2, 3, 4, 5].map((n) => (
+                                    <button
+                                        key={n}
+                                        type="button"
+                                        onMouseEnter={() => setHover(n)}
+                                        onMouseLeave={() => setHover(0)}
+                                        onClick={() => setRating(n)}
+                                        className="transition-transform hover:scale-110"
+                                    >
+                                        <Star
+                                            className={`w-9 h-9 ${
+                                                (hover || rating) >= n
+                                                    ? "text-kfc-yellow fill-kfc-yellow"
+                                                    : "text-kfc-charcoal/20"
+                                            }`}
+                                        />
                                     </button>
-                                    <button className="hover:text-[#e11d48] transition-colors font-semibold">
-                                        👎 No útil
-                                    </button>
-                                </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
-
-                    {/* Sidebar */}
-                    <div className="space-y-6">
-                        {/* Calificación General */}
-                        <div className="bg-gradient-to-br from-[#e11d48] to-[#be123c] text-white rounded-3xl p-8 shadow-lg">
-                            <p className="text-sm opacity-90 mb-2">Calificación General</p>
-                            <div className="text-5xl font-black mb-2">4.8</div>
-                            <div className="flex gap-1 mb-4">
-                                {renderStars(5)}
-                            </div>
-                            <p className="text-sm opacity-90">{reviews.length} reseñas verificadas</p>
                         </div>
 
-                        {/* Botón Escribir Reseña */}
-                        {!showForm && (
-                            <button
-                                onClick={() => setShowForm(true)}
-                                className="w-full bg-white hover:bg-gray-50 text-[#e11d48] font-black py-4 rounded-2xl border-2 border-[#e11d48] transition-all text-lg"
-                            >
-                                Escribir Reseña
-                            </button>
-                        )}
-
-                        {/* Formulario */}
-                        {showForm && (
-                            <div className="bg-white rounded-3xl p-6 border-2 border-[#e11d48] shadow-lg">
-                                <h3 className="font-black text-[#7f1d1d] mb-4">Tu Reseña</h3>
-                                <form onSubmit={handleSubmit} className="space-y-4">
-                                    {/* Seleccionar Pedido */}
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-2">Pedido</label>
-                                        <select
-                                            value={newReview.orderId}
-                                            onChange={(e) => setNewReview(prev => ({ ...prev, orderId: e.target.value }))}
-                                            className="w-full px-3 py-2 border border-gray-200 rounded-xl focus:outline-none focus:border-[#e11d48]"
-                                            required
-                                        >
-                                            <option value="">Selecciona un pedido...</option>
-                                            <option value="001">Pedido #KFC-2026-001</option>
-                                            <option value="002">Pedido #KFC-2026-002</option>
-                                        </select>
-                                    </div>
-
-                                    {/* Calificación */}
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-2">Calificación</label>
-                                        {renderStars(newReview.rating, true)}
-                                    </div>
-
-                                    {/* Título */}
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-2">Título</label>
-                                        <input
-                                            type="text"
-                                            value={newReview.title}
-                                            onChange={(e) => setNewReview(prev => ({ ...prev, title: e.target.value }))}
-                                            placeholder="Resumen de tu experiencia"
-                                            className="w-full px-3 py-2 border border-gray-200 rounded-xl focus:outline-none focus:border-[#e11d48]"
-                                            required
-                                        />
-                                    </div>
-
-                                    {/* Texto */}
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-2">Tu Opinión</label>
-                                        <textarea
-                                            value={newReview.text}
-                                            onChange={(e) => setNewReview(prev => ({ ...prev, text: e.target.value }))}
-                                            placeholder="Cuéntanos tu experiencia..."
-                                            rows="4"
-                                            className="w-full px-3 py-2 border border-gray-200 rounded-xl focus:outline-none focus:border-[#e11d48]"
-                                            required
-                                        />
-                                    </div>
-
-                                    {/* Botones */}
-                                    <div className="flex gap-2">
-                                        <button
-                                            type="submit"
-                                            className="flex-1 bg-[#e11d48] hover:bg-[#be123c] text-white font-bold py-2 rounded-xl transition-all"
-                                        >
-                                            Publicar
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowForm(false)}
-                                            className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 rounded-xl transition-all"
-                                        >
-                                            Cancelar
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        )}
-
-                        {/* Info Adicional */}
-                        <div className="bg-blue-50 rounded-2xl p-6 border border-blue-200">
-                            <p className="text-sm text-blue-900">
-                                <span className="font-bold">💡 Tip:</span> Las reseñas ayudan a otros clientes a tomar mejores decisiones.
-                            </p>
+                        <div>
+                            <label className="font-heading text-xs uppercase tracking-widest text-kfc-charcoal/60">Tu comentario</label>
+                            <textarea
+                                value={comment}
+                                onChange={(e) => setComment(e.target.value)}
+                                rows={4}
+                                placeholder="Cuéntanos cómo estuvo tu experiencia..."
+                                className="mt-2 w-full px-4 py-3 rounded-xl border-2 border-kfc-charcoal/10 focus:border-kfc-orange outline-none resize-none"
+                            />
                         </div>
-                    </div>
+
+                        <button
+                            type="submit"
+                            className="rounded-full bg-kfc-orange hover:bg-kfc-orange-dark text-white font-bold uppercase tracking-wider px-6 py-3 transition-colors inline-flex items-center gap-2"
+                        >
+                            <Send className="w-4 h-4" /> Publicar reseña
+                        </button>
+                    </form>
                 </div>
-            </div>
+
+                {/* Reviews list */}
+                <h3 className="font-heading text-xl uppercase mb-5">Lo que dicen otros clientes</h3>
+                <div className="space-y-4">
+                    {REVIEWS.map((r) => (
+                        <div key={r.id} className="bg-white rounded-3xl p-6 border-2 border-kfc-charcoal/5">
+                            <div className="flex items-start gap-4">
+                                <img src={r.avatar} alt={r.user} className="w-14 h-14 rounded-full" />
+                                <div className="flex-1">
+                                    <div className="flex flex-wrap items-center gap-3">
+                                        <p className="font-bold">{r.user}</p>
+                                        <div className="flex text-kfc-yellow">
+                                            {[...Array(r.rating)].map((_, i) => (
+                                                <Star key={i} className="w-4 h-4 fill-kfc-yellow" />
+                                            ))}
+                                        </div>
+                                        <span className="text-xs text-kfc-charcoal/50 ml-auto">{r.date}</span>
+                                    </div>
+                                    <p className="text-xs text-kfc-orange font-bold uppercase tracking-wide mt-1">{r.product}</p>
+                                    <p className="text-kfc-charcoal/80 mt-3">{r.comment}</p>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </section>
         </div>
     );
 };

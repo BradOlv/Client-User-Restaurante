@@ -1,442 +1,190 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CheckCircleIcon, CreditCardIcon, MapPinIcon, LockClosedIcon } from "@heroicons/react/24/outline";
+import { useCartStore } from "../../../store/cartStore";
+import { CreditCard, Banknote, Smartphone, MapPin, Clock, ArrowRight } from "lucide-react";
+import toast from "react-hot-toast";
 
 export const CheckoutView = () => {
     const navigate = useNavigate();
-    const [currentStep, setCurrentStep] = useState(1);
-    const [paymentMethod, setPaymentMethod] = useState('card');
-    const [deliveryType, setDeliveryType] = useState('delivery');
-    const [formData, setFormData] = useState({
-        fullName: '',
-        email: '',
-        phone: '',
-        address: '',
-        addressDetails: '',
-        cardNumber: '',
-        expiryDate: '',
-        cvv: '',
-        terms: false
-    });
-    const [errors, setErrors] = useState({});
+    const items = useCartStore((s) => s.items);
+    const total = useCartStore((s) => s.getTotal());
+    const clear = useCartStore((s) => s.clear);
 
-    // Datos de ejemplo
-    const cartItems = [
-        { name: 'MEGA COMBO KINAL', quantity: 2, price: 199, total: 398 },
-        { name: 'Ensalada de Temporada', quantity: 1, price: 45, total: 45 }
-    ];
+    const [method, setMethod] = useState("delivery");
+    const [payment, setPayment] = useState("card");
+    const [form, setForm] = useState({ name: "", phone: "", address: "", notes: "" });
 
-    const subtotal = cartItems.reduce((sum, item) => sum + item.total, 0);
-    const tax = subtotal * 0.12;
-    const deliveryFee = deliveryType === 'delivery' ? 0 : 0;
-    const total = subtotal + tax + deliveryFee;
-
-    const handleInputChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: type === 'checkbox' ? checked : value
-        }));
-        if (errors[name]) {
-            setErrors(prev => ({ ...prev, [name]: '' }));
-        }
-    };
-
-    const validateStep = (step) => {
-        const newErrors = {};
-        
-        if (step === 1) {
-            if (!formData.fullName.trim()) newErrors.fullName = 'Nombre requerido';
-            if (!formData.email.trim()) newErrors.email = 'Email requerido';
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Email inválido';
-            if (!formData.phone.trim()) newErrors.phone = 'Teléfono requerido';
-        }
-        
-        if (step === 2) {
-            if (deliveryType === 'delivery' && !formData.address.trim()) newErrors.address = 'Dirección requerida';
-        }
-
-        if (step === 3) {
-            if (paymentMethod === 'card') {
-                if (!formData.cardNumber.trim()) newErrors.cardNumber = 'Número de tarjeta requerido';
-                if (!formData.expiryDate.trim()) newErrors.expiryDate = 'Fecha de vencimiento requerida';
-                if (!formData.cvv.trim()) newErrors.cvv = 'CVV requerido';
-            }
-            if (!formData.terms) newErrors.terms = 'Debes aceptar los términos';
-        }
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
-    const handleNext = () => {
-        if (validateStep(currentStep)) {
-            setCurrentStep(currentStep + 1);
-        }
-    };
-
-    const handlePrev = () => {
-        setCurrentStep(currentStep - 1);
-    };
+    if (items.length === 0) {
+        return (
+            <div className="bg-kfc-cream min-h-screen flex items-center justify-center p-8">
+                <div className="text-center">
+                    <h2 className="font-display text-3xl">No hay productos en el carrito</h2>
+                    <button
+                        onClick={() => navigate("/portal/menu")}
+                        className="mt-4 rounded-full bg-kfc-orange text-white font-bold uppercase tracking-wider px-6 py-3"
+                    >
+                        Ir al Menú
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (validateStep(currentStep)) {
-            console.log('Pedido confirmado:', formData);
-            navigate('/portal/confirmacion');
+        if (!form.name || !form.phone || (method === "delivery" && !form.address)) {
+            toast.error("Completa todos los campos requeridos");
+            return;
         }
-    };
-
-    const renderStep = () => {
-        switch(currentStep) {
-            case 1:
-                return (
-                    <div className="space-y-4">
-                        <h2 className="text-2xl font-black text-[#7f1d1d] mb-6">Información de Contacto</h2>
-                        
-                        <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-2">Nombre Completo *</label>
-                            <input
-                                type="text"
-                                name="fullName"
-                                value={formData.fullName}
-                                onChange={handleInputChange}
-                                className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-colors ${
-                                    errors.fullName ? 'border-red-500 focus:border-red-600' : 'border-gray-200 focus:border-[#e11d48]'
-                                }`}
-                                placeholder="Tu nombre"
-                            />
-                            {errors.fullName && <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>}
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-2">Correo Electrónico *</label>
-                            <input
-                                type="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleInputChange}
-                                className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-colors ${
-                                    errors.email ? 'border-red-500 focus:border-red-600' : 'border-gray-200 focus:border-[#e11d48]'
-                                }`}
-                                placeholder="tu@email.com"
-                            />
-                            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-2">Teléfono *</label>
-                            <input
-                                type="tel"
-                                name="phone"
-                                value={formData.phone}
-                                onChange={handleInputChange}
-                                className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-colors ${
-                                    errors.phone ? 'border-red-500 focus:border-red-600' : 'border-gray-200 focus:border-[#e11d48]'
-                                }`}
-                                placeholder="+502 XXXX XXXX"
-                            />
-                            {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
-                        </div>
-                    </div>
-                );
-            
-            case 2:
-                return (
-                    <div className="space-y-4">
-                        <h2 className="text-2xl font-black text-[#7f1d1d] mb-6">Tipo de Entrega</h2>
-                        
-                        <div className="space-y-3">
-                            <label className={`flex items-start p-4 border-2 rounded-xl cursor-pointer transition-all ${
-                                deliveryType === 'delivery' ? 'border-[#e11d48] bg-[#ffe6ed]' : 'border-gray-200 hover:border-gray-300'
-                            }`}>
-                                <input
-                                    type="radio"
-                                    name="deliveryType"
-                                    value="delivery"
-                                    checked={deliveryType === 'delivery'}
-                                    onChange={(e) => setDeliveryType(e.target.value)}
-                                    className="w-5 h-5 accent-[#e11d48] mt-1"
-                                />
-                                <div className="ml-4">
-                                    <p className="font-bold text-gray-800">Entrega a Domicilio</p>
-                                    <p className="text-sm text-gray-600">Envío gratis para órdenes mayores a Q100</p>
-                                </div>
-                            </label>
-
-                            <label className={`flex items-start p-4 border-2 rounded-xl cursor-pointer transition-all ${
-                                deliveryType === 'pickup' ? 'border-[#e11d48] bg-[#ffe6ed]' : 'border-gray-200 hover:border-gray-300'
-                            }`}>
-                                <input
-                                    type="radio"
-                                    name="deliveryType"
-                                    value="pickup"
-                                    checked={deliveryType === 'pickup'}
-                                    onChange={(e) => setDeliveryType(e.target.value)}
-                                    className="w-5 h-5 accent-[#e11d48] mt-1"
-                                />
-                                <div className="ml-4">
-                                    <p className="font-bold text-gray-800">Retiro en Local</p>
-                                    <p className="text-sm text-gray-600">Recoge tu pedido en 20-30 minutos</p>
-                                </div>
-                            </label>
-                        </div>
-
-                        {deliveryType === 'delivery' && (
-                            <div className="space-y-4 mt-6 pt-6 border-t border-gray-200">
-                                <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-2">Dirección *</label>
-                                    <input
-                                        type="text"
-                                        name="address"
-                                        value={formData.address}
-                                        onChange={handleInputChange}
-                                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-colors ${
-                                            errors.address ? 'border-red-500 focus:border-red-600' : 'border-gray-200 focus:border-[#e11d48]'
-                                        }`}
-                                        placeholder="Calle y número"
-                                    />
-                                    {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-2">Detalles Adicionales</label>
-                                    <textarea
-                                        name="addressDetails"
-                                        value={formData.addressDetails}
-                                        onChange={handleInputChange}
-                                        placeholder="Apartamento, edificio, referencias, etc."
-                                        rows="3"
-                                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#e11d48]"
-                                    />
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                );
-            
-            case 3:
-                return (
-                    <div className="space-y-4">
-                        <h2 className="text-2xl font-black text-[#7f1d1d] mb-6">Método de Pago</h2>
-                        
-                        <div className="space-y-3 mb-6">
-                            <label className={`flex items-start p-4 border-2 rounded-xl cursor-pointer transition-all ${
-                                paymentMethod === 'card' ? 'border-[#e11d48] bg-[#ffe6ed]' : 'border-gray-200 hover:border-gray-300'
-                            }`}>
-                                <input
-                                    type="radio"
-                                    name="paymentMethod"
-                                    value="card"
-                                    checked={paymentMethod === 'card'}
-                                    onChange={(e) => setPaymentMethod(e.target.value)}
-                                    className="w-5 h-5 accent-[#e11d48] mt-1"
-                                />
-                                <div className="ml-4 flex-1">
-                                    <p className="font-bold text-gray-800">Tarjeta de Crédito/Débito</p>
-                                    <p className="text-sm text-gray-600">Visa, Mastercard, American Express</p>
-                                </div>
-                            </label>
-
-                            <label className={`flex items-start p-4 border-2 rounded-xl cursor-pointer transition-all ${
-                                paymentMethod === 'cash' ? 'border-[#e11d48] bg-[#ffe6ed]' : 'border-gray-200 hover:border-gray-300'
-                            }`}>
-                                <input
-                                    type="radio"
-                                    name="paymentMethod"
-                                    value="cash"
-                                    checked={paymentMethod === 'cash'}
-                                    onChange={(e) => setPaymentMethod(e.target.value)}
-                                    className="w-5 h-5 accent-[#e11d48] mt-1"
-                                />
-                                <div className="ml-4 flex-1">
-                                    <p className="font-bold text-gray-800">Pago en Efectivo</p>
-                                    <p className="text-sm text-gray-600">Paga cuando recibas tu pedido</p>
-                                </div>
-                            </label>
-                        </div>
-
-                        {paymentMethod === 'card' && (
-                            <div className="space-y-4 mt-6 pt-6 border-t border-gray-200">
-                                <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-2">Número de Tarjeta *</label>
-                                    <input
-                                        type="text"
-                                        name="cardNumber"
-                                        value={formData.cardNumber}
-                                        onChange={handleInputChange}
-                                        maxLength="16"
-                                        placeholder="1234 5678 9012 3456"
-                                        className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-colors font-mono ${
-                                            errors.cardNumber ? 'border-red-500' : 'border-gray-200 focus:border-[#e11d48]'
-                                        }`}
-                                    />
-                                    {errors.cardNumber && <p className="text-red-500 text-sm mt-1">{errors.cardNumber}</p>}
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-2">Vencimiento *</label>
-                                        <input
-                                            type="text"
-                                            name="expiryDate"
-                                            value={formData.expiryDate}
-                                            onChange={handleInputChange}
-                                            placeholder="MM/YY"
-                                            className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-colors font-mono ${
-                                                errors.expiryDate ? 'border-red-500' : 'border-gray-200 focus:border-[#e11d48]'
-                                            }`}
-                                        />
-                                        {errors.expiryDate && <p className="text-red-500 text-sm mt-1">{errors.expiryDate}</p>}
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-2">CVV *</label>
-                                        <input
-                                            type="text"
-                                            name="cvv"
-                                            value={formData.cvv}
-                                            onChange={handleInputChange}
-                                            maxLength="3"
-                                            placeholder="123"
-                                            className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none transition-colors font-mono ${
-                                                errors.cvv ? 'border-red-500' : 'border-gray-200 focus:border-[#e11d48]'
-                                            }`}
-                                        />
-                                        {errors.cvv && <p className="text-red-500 text-sm mt-1">{errors.cvv}</p>}
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Términos */}
-                        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mt-6">
-                            <label className="flex items-start gap-3 cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    name="terms"
-                                    checked={formData.terms}
-                                    onChange={handleInputChange}
-                                    className="w-5 h-5 accent-[#e11d48] mt-1"
-                                />
-                                <div className="flex-1">
-                                    <p className="text-sm text-blue-900">
-                                        Acepto los <button className="font-bold hover:underline">términos y condiciones</button> y la <button className="font-bold hover:underline">política de privacidad</button>
-                                    </p>
-                                </div>
-                            </label>
-                            {errors.terms && <p className="text-red-500 text-sm mt-2">{errors.terms}</p>}
-                        </div>
-                    </div>
-                );
-            
-            default:
-                return null;
-        }
+        toast.success("¡Pedido realizado!");
+        clear();
+        navigate("/portal/confirmacion");
     };
 
     return (
-        <div className="min-h-screen bg-[#fdfcf0] py-12">
-            <div className="max-w-5xl mx-auto px-6">
-                <h1 className="text-4xl font-black text-[#7f1d1d] mb-8 text-center">Finalizar Pedido</h1>
+        <div className="bg-kfc-cream min-h-screen py-12">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="mb-8">
+                    <span className="font-heading text-xs uppercase tracking-[0.3em] text-kfc-red">Casi listo</span>
+                    <h1 className="font-display text-4xl md:text-6xl mt-2 leading-none">
+                        Finalizar <span className="text-kfc-orange">pedido</span>
+                    </h1>
+                </div>
 
-                <div className="grid lg:grid-cols-3 gap-8">
-                    {/* Formulario */}
-                    <div className="lg:col-span-2">
-                        {/* Progress Steps */}
-                        <div className="flex items-center gap-4 mb-8">
-                            {[1, 2, 3].map((step) => (
-                                <div key={step} className="flex items-center flex-1">
-                                    <div className={`flex items-center justify-center w-10 h-10 rounded-full font-bold text-sm transition-all ${
-                                        step < currentStep ? 'bg-green-500 text-white' :
-                                        step === currentStep ? 'bg-[#e11d48] text-white' :
-                                        'bg-gray-200 text-gray-600'
-                                    }`}>
-                                        {step < currentStep ? '✓' : step}
-                                    </div>
-                                    {step < 3 && (
-                                        <div className={`flex-1 h-1 mx-2 transition-colors ${
-                                            step < currentStep ? 'bg-green-500' : 'bg-gray-200'
-                                        }`} />
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* Paso Actual */}
-                        <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 mb-8">
-                            {renderStep()}
-                        </div>
-
-                        {/* Botones de Navegación */}
-                        <div className="flex gap-4">
-                            {currentStep > 1 && (
-                                <button
-                                    onClick={handlePrev}
-                                    className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-xl transition-all"
-                                >
-                                    Atrás
-                                </button>
-                            )}
-                            {currentStep < 3 ? (
-                                <button
-                                    onClick={handleNext}
-                                    className="flex-1 bg-[#e11d48] hover:bg-[#be123c] text-white font-bold py-3 px-6 rounded-xl transition-all"
-                                >
-                                    Siguiente
-                                </button>
-                            ) : (
-                                <button
-                                    onClick={handleSubmit}
-                                    className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl transition-all flex items-center justify-center gap-2"
-                                >
-                                    <CheckCircleIcon className="w-5 h-5" />
-                                    Confirmar Pedido
-                                </button>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Resumen Lateral */}
-                    <div className="space-y-6">
-                        <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-100 sticky top-32">
-                            <h3 className="font-black text-[#7f1d1d] mb-4">Resumen del Pedido</h3>
-                            <div className="space-y-3 mb-4 max-h-48 overflow-y-auto">
-                                {cartItems.map((item, idx) => (
-                                    <div key={idx} className="flex justify-between text-sm">
-                                        <span className="text-gray-700">{item.name} x{item.quantity}</span>
-                                        <span className="font-bold text-gray-800">Q{item.total.toFixed(2)}</span>
-                                    </div>
+                <form onSubmit={handleSubmit} className="grid lg:grid-cols-3 gap-8">
+                    <div className="lg:col-span-2 space-y-6">
+                        {/* Método */}
+                        <div className="bg-white rounded-3xl p-6 border-2 border-kfc-charcoal/5">
+                            <h3 className="font-heading text-lg uppercase mb-4">Método de entrega</h3>
+                            <div className="grid sm:grid-cols-2 gap-3">
+                                {[
+                                    { id: "delivery", label: "Delivery", icon: MapPin, desc: "30 min" },
+                                    { id: "pickup", label: "Recoger en sucursal", icon: Clock, desc: "15 min" },
+                                ].map((m) => (
+                                    <button
+                                        key={m.id}
+                                        type="button"
+                                        onClick={() => setMethod(m.id)}
+                                        className={`p-4 rounded-2xl border-2 text-left transition-all ${
+                                            method === m.id
+                                                ? "border-kfc-orange bg-kfc-orange-light"
+                                                : "border-kfc-charcoal/10 hover:border-kfc-orange/40"
+                                        }`}
+                                    >
+                                        <m.icon className="w-5 h-5 text-kfc-orange mb-2" />
+                                        <p className="font-heading uppercase">{m.label}</p>
+                                        <p className="text-xs text-kfc-charcoal/60">{m.desc}</p>
+                                    </button>
                                 ))}
                             </div>
+                        </div>
 
-                            <div className="space-y-2 border-t border-gray-200 pt-4 text-sm">
-                                <div className="flex justify-between">
-                                    <span className="text-gray-600">Subtotal</span>
-                                    <span className="font-bold">Q{subtotal.toFixed(2)}</span>
+                        {/* Form */}
+                        <div className="bg-white rounded-3xl p-6 border-2 border-kfc-charcoal/5 space-y-4">
+                            <h3 className="font-heading text-lg uppercase mb-2">Tus datos</h3>
+                            <div className="grid sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="font-heading text-xs uppercase tracking-widest text-kfc-charcoal/60">Nombre</label>
+                                    <input
+                                        value={form.name}
+                                        onChange={(e) => setForm({ ...form, name: e.target.value })}
+                                        placeholder="Tu nombre"
+                                        className="mt-2 w-full px-4 py-3 rounded-xl border-2 border-kfc-charcoal/10 focus:border-kfc-orange outline-none"
+                                    />
                                 </div>
-                                <div className="flex justify-between">
-                                    <span className="text-gray-600">Impuesto (12%)</span>
-                                    <span className="font-bold">Q{tax.toFixed(2)}</span>
-                                </div>
-                                {deliveryFee > 0 && (
-                                    <div className="flex justify-between">
-                                        <span className="text-gray-600">Envío</span>
-                                        <span className="font-bold">Q{deliveryFee.toFixed(2)}</span>
-                                    </div>
-                                )}
-                                <div className="border-t border-gray-200 pt-2 flex justify-between text-lg">
-                                    <span className="font-black text-[#7f1d1d]">Total</span>
-                                    <span className="font-black text-[#e11d48]">Q{total.toFixed(2)}</span>
+                                <div>
+                                    <label className="font-heading text-xs uppercase tracking-widest text-kfc-charcoal/60">Teléfono</label>
+                                    <input
+                                        value={form.phone}
+                                        onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                                        placeholder="+502 0000-0000"
+                                        className="mt-2 w-full px-4 py-3 rounded-xl border-2 border-kfc-charcoal/10 focus:border-kfc-orange outline-none"
+                                    />
                                 </div>
                             </div>
+                            {method === "delivery" && (
+                                <div>
+                                    <label className="font-heading text-xs uppercase tracking-widest text-kfc-charcoal/60">Dirección</label>
+                                    <input
+                                        value={form.address}
+                                        onChange={(e) => setForm({ ...form, address: e.target.value })}
+                                        placeholder="Tu dirección completa"
+                                        className="mt-2 w-full px-4 py-3 rounded-xl border-2 border-kfc-charcoal/10 focus:border-kfc-orange outline-none"
+                                    />
+                                </div>
+                            )}
+                            <div>
+                                <label className="font-heading text-xs uppercase tracking-widest text-kfc-charcoal/60">Notas (opcional)</label>
+                                <textarea
+                                    value={form.notes}
+                                    onChange={(e) => setForm({ ...form, notes: e.target.value })}
+                                    placeholder="Sin cebolla, extra salsa, etc."
+                                    rows={3}
+                                    className="mt-2 w-full px-4 py-3 rounded-xl border-2 border-kfc-charcoal/10 focus:border-kfc-orange outline-none resize-none"
+                                />
+                            </div>
+                        </div>
 
-                            <div className="bg-green-50 rounded-lg p-3 mt-4 flex items-start gap-2 text-xs">
-                                <LockClosedIcon className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
-                                <p className="text-green-800">Tu pago es seguro y encriptado</p>
+                        {/* Pago */}
+                        <div className="bg-white rounded-3xl p-6 border-2 border-kfc-charcoal/5">
+                            <h3 className="font-heading text-lg uppercase mb-4">Método de pago</h3>
+                            <div className="grid sm:grid-cols-3 gap-3">
+                                {[
+                                    { id: "card", label: "Tarjeta", icon: CreditCard },
+                                    { id: "cash", label: "Efectivo", icon: Banknote },
+                                    { id: "transfer", label: "Transferencia", icon: Smartphone },
+                                ].map((p) => (
+                                    <button
+                                        key={p.id}
+                                        type="button"
+                                        onClick={() => setPayment(p.id)}
+                                        className={`p-4 rounded-2xl border-2 text-center transition-all ${
+                                            payment === p.id
+                                                ? "border-kfc-orange bg-kfc-orange-light"
+                                                : "border-kfc-charcoal/10 hover:border-kfc-orange/40"
+                                        }`}
+                                    >
+                                        <p.icon className="w-5 h-5 text-kfc-orange mx-auto mb-2" />
+                                        <p className="font-heading uppercase text-sm">{p.label}</p>
+                                    </button>
+                                ))}
                             </div>
                         </div>
                     </div>
-                </div>
+
+                    {/* Summary */}
+                    <div className="lg:sticky lg:top-24 self-start">
+                        <div className="bg-kfc-charcoal text-white rounded-3xl p-7 grain-overlay relative overflow-hidden">
+                            <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-kfc-orange/30 blur-3xl" />
+                            <div className="relative">
+                                <h3 className="font-heading text-xl uppercase">Tu pedido</h3>
+                                <div className="mt-4 space-y-2 text-sm max-h-60 overflow-y-auto scrollbar-hide">
+                                    {items.map((i) => (
+                                        <div key={i.id} className="flex justify-between text-white/80">
+                                            <span className="truncate pr-2">{i.qty}x {i.name}</span>
+                                            <span className="shrink-0">Q{(i.price * i.qty).toFixed(2)}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="border-t border-white/10 mt-5 pt-5 space-y-2 text-sm">
+                                    <div className="flex justify-between"><span className="text-white/60">Subtotal</span><span>Q{total.toFixed(2)}</span></div>
+                                    <div className="flex justify-between"><span className="text-white/60">Delivery</span><span className="text-kfc-yellow">GRATIS</span></div>
+                                    <div className="flex justify-between"><span className="text-white/60">IVA</span><span>Q{(total * 0.12).toFixed(2)}</span></div>
+                                </div>
+                                <div className="flex justify-between items-end mt-4 pt-4 border-t border-white/10">
+                                    <span className="font-heading uppercase">Total</span>
+                                    <span className="font-display text-3xl text-kfc-yellow">Q{(total * 1.12).toFixed(2)}</span>
+                                </div>
+                                <button
+                                    type="submit"
+                                    className="w-full mt-6 rounded-full bg-kfc-red hover:bg-kfc-red-dark text-white font-bold uppercase tracking-wider py-4 transition-colors inline-flex items-center justify-center gap-2"
+                                >
+                                    Confirmar pedido <ArrowRight className="w-4 h-4" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     );

@@ -1,51 +1,35 @@
-import { useNavigate } from 'react-router-dom';
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import { useNavigate } from "react-router-dom";
+import { Drumstick, Home } from "lucide-react";
 
 export const NotFoundPage = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="min-h-screen bg-[#fdfcf0] flex items-center justify-center px-4">
-            <div className="text-center">
-                {/* Número 404 Grande */}
-                <div className="mb-8">
-                    <div className="text-9xl font-black text-[#e11d48] mb-4">404</div>
-                    <h1 className="text-5xl font-black text-[#7f1d1d] mb-4">¡Página no encontrada!</h1>
-                    <p className="text-xl text-gray-600 mb-8 max-w-md mx-auto">
-                        Parece que la página que buscas se fue a tomar un descanso. Déjanos ayudarte a volver al menú.
-                    </p>
+        <div className="min-h-screen bg-kfc-cream flex items-center justify-center p-6 grain-overlay relative overflow-hidden">
+            <div className="absolute -top-20 -right-20 w-96 h-96 bg-kfc-orange rounded-full blur-3xl opacity-30" />
+            <div className="absolute -bottom-20 -left-20 w-96 h-96 bg-kfc-yellow rounded-full blur-3xl opacity-30" />
+
+            <div className="relative text-center max-w-lg">
+                <div className="w-28 h-28 mx-auto bg-kfc-red rounded-full flex items-center justify-center shadow-2xl rotate-12 animate-float">
+                    <Drumstick className="w-14 h-14 text-white" strokeWidth={2.5} />
                 </div>
 
-                {/* Icono Decorativo */}
-                <div className="mb-8 flex justify-center animate-bounce">
-                    <ExclamationTriangleIcon className="w-24 h-24 text-gray-700" />
-                </div>
+                <h1 className="font-display text-7xl md:text-9xl mt-6 leading-none text-kfc-charcoal">
+                    4<span className="text-kfc-orange">0</span>4
+                </h1>
+                <h2 className="font-heading text-xl md:text-2xl uppercase mt-2 text-kfc-charcoal">
+                    Esta página voló como pollo
+                </h2>
+                <p className="text-kfc-charcoal/60 mt-4">
+                    Parece que la página que buscas no existe. Pero no te preocupes, te llevamos de vuelta a un lugar lleno de sabor.
+                </p>
 
-                {/* Botones de Acción */}
-                <div className="flex gap-4 justify-center flex-wrap">
-                    <button
-                        onClick={() => navigate('/portal')}
-                        className="bg-[#e11d48] hover:bg-[#be123c] text-white font-bold py-4 px-8 rounded-2xl text-lg uppercase tracking-widest transition-all shadow-lg active:scale-95"
-                    >
-                        Ir al Inicio
-                    </button>
-                    <button
-                        onClick={() => navigate('/portal/menu')}
-                        className="bg-white border-2 border-[#e11d48] text-[#e11d48] hover:bg-[#e11d48] hover:text-white font-bold py-4 px-8 rounded-2xl text-lg uppercase tracking-widest transition-all"
-                    >
-                        Ver Menú
-                    </button>
-                </div>
-
-                {/* Links Útiles */}
-                <div className="mt-12 space-y-2 text-gray-600">
-                    <p className="text-sm">¿Necesitas ayuda?</p>
-                    <div className="space-x-4">
-                        <button className="text-[#e11d48] font-bold hover:underline">Contacto</button>
-                        <span className="text-gray-400">•</span>
-                        <button className="text-[#e11d48] font-bold hover:underline">Chat en vivo</button>
-                    </div>
-                </div>
+                <button
+                    onClick={() => navigate("/portal")}
+                    className="mt-8 rounded-full bg-kfc-red hover:bg-kfc-red-dark text-white font-bold uppercase tracking-wider px-8 py-4 transition-colors inline-flex items-center gap-2"
+                >
+                    <Home className="w-4 h-4" /> Volver al inicio
+                </button>
             </div>
         </div>
     );
